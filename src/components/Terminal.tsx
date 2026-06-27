@@ -26,6 +26,7 @@ const COMMANDS_LIST = [
   "projects",
   "project",
   "experience",
+  "timeline",
   "skills",
   "stack",
   "opensource",
@@ -442,7 +443,7 @@ ${Object.entries(resumeData.skills)
   .map(
     ([category, list]) => `
 [${category}]
-${list.map((s) => ` - ${s.name}: ${s.level}%`).join("\n")}`,
+${list.map((s) => ` - ${s.name}: ${s.level}`).join("\n")}`,
   )
   .join("\n")}
 `,
@@ -455,17 +456,28 @@ Portfolio: ${resumeData.personal.website}
 
 Type "hireme" for custom booking details and downloadable materials!
 `,
-      "skills.txt": `Technical Proficiencies & Competency Index:
----------------------------------------------------------
+      "skills.txt": `=========================================================
+                      BEST SKILLS & STRENGTHS
+=========================================================
+${resumeData.best_skills.map((skill) => ` ✦ ${skill}`).join("\n")}
+
+=========================================================
+            TECHNICAL PROFICIENCIES & COMPETENCY INDEX
+=========================================================
 ${Object.entries(resumeData.skills)
   .map(
     ([category, list]) => `
 [${category}]
 ${list
   .map((s) => {
-    const barsCount = Math.round(s.level / 10);
+    const norm = s.level.toLowerCase();
+    let barsCount = 5;
+    if (norm.includes("expert")) barsCount = 10;
+    else if (norm.includes("advanced")) barsCount = 8;
+    else if (norm.includes("intermediate")) barsCount = 6;
+    else if (norm.includes("fresher")) barsCount = 3;
     const bars = "█".repeat(barsCount) + "░".repeat(10 - barsCount);
-    return `  ${s.name.padEnd(26)} ${bars} ${s.level}%`;
+    return `  ${s.name.padEnd(31)} ${bars} [${s.level}]`;
   })
   .join("\n")}`,
   )
@@ -1073,6 +1085,13 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
       resolvedArgs = [matchedArt.slug];
     } else if (isProjectsQuery(cleanInput)) {
       resolvedCmd = "projects";
+      const skillsToSearch = ["angular", "react", "node", "c#", "dotnet", "net", "aws", "oracle", "sql", "postgres", "mysql", "mongodb", "ionic", "capacitor", "telegram"];
+      for (const skill of skillsToSearch) {
+        if (cleanInput.includes(skill)) {
+          resolvedArgs = [skill];
+          break;
+        }
+      }
     } else if (isSkillsQuery(cleanInput)) {
       resolvedCmd = "skills";
     } else if (isExperienceQuery(cleanInput)) {
@@ -1128,6 +1147,7 @@ resume [download]     - Renders formatted resume. Run 'resume download' for PDF 
 projects              - Lists all development projects.
 project <name>        - Deep dive info on a specific project (e.g., 'project motomate').
 experience            - Shows Ashwani's technical engineering timeline.
+timeline              - Shows Ashwani's professional journey timeline graph.
 skills                - Displays interactive competency progress bars.
 blog                  - Lists technical blog articles.
 article <slug>        - Renders full blog article (e.g., 'article redis-event-bus').
@@ -1252,8 +1272,49 @@ ${exp.highlights.map((h) => `  - ${h}`).join("\n")}
   .join("\n")}`;
           break;
 
+        case "timeline":
+          output = `=========================================================
+                  PROFESSIONAL JOURNEY TIMELINE
+=========================================================
+
+${resumeData.timeline
+  .map(
+    (t) => `  [Year: ${t.year}] ───► ${t.title}`
+  )
+  .join("\n\n")}
+
+---------------------------------------------------------
+Type "experience" for granular details of achievements or "projects" to view work items.
+`;
+          break;
+
         case "projects":
-          output = `Available Sandboxed Project Specs:
+          if (args[0]) {
+            const filter = args[0].toLowerCase();
+            const filteredProjects = resumeData.projects.filter(p => 
+              p.technologies.some(t => t.toLowerCase().includes(filter)) ||
+              p.id.toLowerCase().includes(filter) ||
+              p.description.toLowerCase().includes(filter)
+            );
+            
+            if (filteredProjects.length > 0) {
+              output = `Projects matching filter '${args[0]}':
+---------------------------------------------------------
+${filteredProjects
+  .map(
+    (p) => `
+* ${p.id.padEnd(20)} - ${p.description}
+  Technologies: [${p.technologies.join(", ")}]
+  (Type "project ${p.id}" for full technical breakdown)`,
+  )
+  .join("\n")}
+`;
+            } else {
+              output = `No projects found matching filter '${args[0]}'.
+Type 'projects' to list all available projects.`;
+            }
+          } else {
+            output = `Available Sandboxed Project Specs:
 ---------------------------------------------------------
 ${resumeData.projects
   .map(
@@ -1263,6 +1324,7 @@ ${resumeData.projects
   )
   .join("\n")}
 `;
+          }
           break;
 
         case "project":
@@ -1318,17 +1380,20 @@ ${resumeData.articles
           output = `=========================================================
                 BOOKING PORTAL & AVAILABILITY
 =========================================================
-Ashwani is currently open to Senior-level Full-Stack consulting contracts,
-architecture vetting, and permanent remote roles.
+Ashwani is currently open to remote consulting contracts and team contributions!
+
+Current Booking Details:
+✦ Availability:        ${resumeData.availability.status}
+✦ Work Commitment:     ${resumeData.availability.hours}
+✦ Contract Rate:       ${resumeData.availability.rate}
+✦ Project Preference:  ${resumeData.availability.preferences}
+✦ Team Engagement:     ${resumeData.availability.setup}
 
 Hiring Actions:
-1. Schedule direct sync:  Email ashwanikumar3811@gmail.com
+1. Schedule direct sync:  Email ${resumeData.personal.email}
 2. Explore GitHub code:   Type "github"
 3. Connect on LinkedIn:   Type "linkedin"
 4. Download Resume PDF:   Type "resume download"
-
-Availability: Remote Worldwide (GMT+5:30)
-Contract terms: Hourly or Retainer structured.
 `;
           break;
 
@@ -1565,7 +1630,7 @@ Enjoy your virtual hot coffee ☕! Keep on hacking.`;
               list.forEach((s) => {
                 if (s.name.toLowerCase().includes(query)) {
                   results.push(
-                    `Skill: ${s.name} (${cat}) - Level: ${s.level}%`,
+                    `Skill: ${s.name} (${cat}) - Level: ${s.level}`,
                   );
                 }
               });

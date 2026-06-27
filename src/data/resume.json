@@ -1,128 +1,169 @@
 {
   "personal": {
-    "name": "Ashwani Kumar",
-    "title": "Senior Full Stack Engineer",
-    "location": "India",
-    "email": "ashwanikumar3811@gmail.com",
-    "github": "https://github.com/ashwani3811",
+    "name": "Ashwani Kumar Vishwakarma",
+    "title": "Expert Angular, React, C# and Node JS Developer",
+    "location": "Kolkata, India",
+    "email": "me@ashwanivishwakarma.com",
+    "github": "https://github.com/ashchan3811",
     "linkedin": "https://www.linkedin.com/in/ashwani-kumar-vishwakarma-5058b4a9",
-    "website": "https://ashwani.dev",
-    "bio": "Senior Full Stack Engineer with 10+ years of expertise in crafting resilient web architectures, highly-scalable backend microservices, and slick, responsive frontends. Specialized in Node.js, React, Angular, AWS, and distributed database tuning."
+    "website": "https://me.ashwanivishwakarma.com",
+    "bio": "Expert Angular, React, C# and Node JS Developer with over a decade of comprehensive experience architecting resilient full-stack applications, robust APIs, and interactive responsive user interfaces. Specialized in enterprise microservices, complex SQL databases, and cross-platform mobile solutions."
   },
+  "availability": {
+    "status": "Available for Remote Part-Time Contracts & Consulting",
+    "hours": "20-40 hours/week",
+    "rate": "$30 - $45 / hour (Negotiable)",
+    "preferences": "Only hourly rate projects (no fixed-cost projects)",
+    "setup": "Open to work as part of a team (currently individual, can scale and bring additional team members if needed)"
+  },
+  "best_skills": [
+    "Angular (Latest Angular 19)",
+    "React JS / Next JS / Tailwind CSS",
+    "Node.js (Express & NestJS)",
+    "C# (.NET Core & ASP.NET Web APIs)",
+    "Database Optimization (SQL Server, PostgreSQL, MongoDB)"
+  ],
+  "timeline": [
+    { "year": 2016, "title": "Joined TCS" },
+    { "year": 2018, "title": "Promoted to System Engineer" },
+    { "year": 2021, "title": "Promoted to IT Analyst" },
+    { "year": 2022, "title": "Started Freelancing" }
+  ],
   "skills": {
     "Frontend": [
-      { "name": "React / Next.js", "level": 96 },
-      { "name": "Angular", "level": 95 },
-      { "name": "TypeScript", "level": 98 },
-      { "name": "Tailwind CSS", "level": 95 },
-      { "name": "Redux / Zustand", "level": 92 }
+      { "name": "Angular (Latest Angular 19)", "level": "Expert" },
+      { "name": "React JS / Next JS", "level": "Expert" },
+      { "name": "TypeScript", "level": "Expert" },
+      { "name": "JavaScript", "level": "Expert" },
+      { "name": "HTML5 / CSS3 / SCSS", "level": "Advanced" }
     ],
-    "Backend": [
-      { "name": "Node.js / Express", "level": 97 },
-      { "name": "NestJS", "level": 94 },
-      { "name": "Python (FastAPI / Django)", "level": 88 },
-      { "name": "Go (Golang)", "level": 85 },
-      { "name": "GraphQL / REST APIs", "level": 95 }
+    "Backend & APIs": [
+      { "name": "Node.js (Express & NestJS)", "level": "Expert" },
+      { "name": "C# (.NET Core & ASP.NET)", "level": "Expert" },
+      { "name": "Web APIs & Entity Framework", "level": "Expert" },
+      { "name": "CakePHP & Laravel", "level": "Intermediate" },
+      { "name": "Ruby on Rails", "level": "Intermediate" }
     ],
-    "Databases": [
-      { "name": "PostgreSQL", "level": 94 },
-      { "name": "Redis (Caching & Streams)", "level": 96 },
-      { "name": "MongoDB", "level": 90 },
-      { "name": "MySQL", "level": 88 }
+    "Databases & SQL": [
+      { "name": "MS SQL Server", "level": "Expert" },
+      { "name": "Oracle", "level": "Advanced" },
+      { "name": "Postgres & MySQL", "level": "Advanced" },
+      { "name": "Mongo DB & DynamoDB", "level": "Advanced" },
+      { "name": "SQLite", "level": "Intermediate" }
     ],
-    "Cloud & DevOps": [
-      { "name": "AWS (EC2, ECS, Lambda, SES)", "level": 92 },
-      { "name": "Docker / Containerization", "level": 94 },
-      { "name": "CI/CD (GitHub Actions / Jenkins)", "level": 90 },
-      { "name": "Kubernetes", "level": 82 }
+    "Frameworks & Core Services": [
+      { "name": "Angular Material & Tailwind", "level": "Expert" },
+      { "name": "Capacitor / Ionic / React Native", "level": "Advanced" },
+      { "name": "AWS Cloud Services", "level": "Advanced" },
+      { "name": "Bootstrap & Kendo UI / PrimeNG", "level": "Advanced" }
     ]
   },
   "experience": [
     {
-      "period": "2022 - Present",
-      "company": "Independent Consultant / Freelance",
-      "role": "Senior Full Stack Engineer",
+      "period": "09/2022 - Present",
+      "company": "Freelance",
+      "role": "Full Stack Developer",
       "highlights": [
-        "Architected and delivered custom enterprise solutions for multi-tenant SaaS clients globally, leveraging Next.js, Node.js, and Serverless AWS frameworks.",
-        "Engineered 'motomate', an on-demand fleet-servicing application which reduced dispatch latency by 35% using geohashing and WebSockets.",
-        "Tuned heavy database architectures to support up to 5,000 requests per second, achieving a 45% reduction in PostgreSQL CPU consumption via aggressive query analysis and Redis buffering."
+        "Architecting and delivering end-to-end features spanning Angular/React UIs, scalable Node.js/C# backends, and Oracle/Mongo database tiers.",
+        "Developing cross-platform mobile experiences leveraging Capacitor, Ionic, and React Native to deploy native-grade iOS/Android applications.",
+        "Engineering performant server components to handle heavy scraping, custom data polishing pipeline triggers, and durable schema optimization in MongoDB, DynamoDB, and MySQL."
       ]
     },
     {
-      "period": "2022",
+      "period": "10/2022 - 03/2023",
       "company": "Turing",
-      "role": "Senior Engineer",
+      "role": "Full Stack Developer",
       "highlights": [
-        "Vetted and collaborated with elite engineering talent worldwide to build robust server architectures for high-growth US startups.",
-        "Refactored complex state management layers in legacy Angular systems to modern reactive patterns, leading to 50% faster UI paint speeds.",
-        "Created scalable third-party APIs using NestJS and unified authentication filters using JSON Web Tokens and Redis-backed session revoking."
+        "Engineered robust web components and modular application hierarchies as a specialized remote Angular and C# developer.",
+        "Designed, optimized, and consumed REST APIs built with ASP.NET Core to enable high-throughput bidirectional data synchronization.",
+        "Developed and maintained highly-complex stored procedures and automated schedule job routines inside enterprise SQL databases."
       ]
     },
     {
-      "period": "2016 - 2022",
+      "period": "05/2021 - 09/2022",
       "company": "TCS (Tata Consultancy Services)",
-      "role": "Lead System Engineer",
+      "role": "IT Analyst",
       "highlights": [
-        "Promoted rapidly from Assistant Systems Engineer to Lead Systems Engineer owing to strong execution of banking compliance architectures.",
-        "Headed a team of 6 developers in designing a real-time risk mitigation and transaction monitoring pipeline for global financial clients, reducing fraudulent alert overhead by 22%.",
-        "Pioneered the adoption of TypeScript and clean architecture principles within the branch division, conducting workshops and drafting strict lint rules."
+        "Headed the layout and identification of high-performance Angular component hierarchies to maximize visual reuse across banking layers.",
+        "Designed and implemented production-grade enterprise microservices and secure custom APIs in .NET Core.",
+        "Created, fine-tuned, and audited transactional database objects and specialized index strategies within MS SQL Server."
+      ]
+    },
+    {
+      "period": "12/2018 - 05/2021",
+      "company": "TCS (Tata Consultancy Services)",
+      "role": "System Engineer",
+      "highlights": [
+        "Crafted single-page client architectures on top of Angular 7+ with robust clean state managers.",
+        "Built and maintained robust business logic APIs using ASP.NET Core MVC interfaces.",
+        "Optimized complex relational models and automated periodic ledger tasks using SQL Server Agents."
+      ]
+    },
+    {
+      "period": "12/2016 - 12/2018",
+      "company": "TCS (Tata Consultancy Services)",
+      "role": "Assistant System Engineer",
+      "highlights": [
+        "Delivered reactive views and routing configurations as an Angular developer in global operations teams.",
+        "Maintained high quality standards by authoring thorough automated front-end unit testing suites utilizing Jasmine & Karma.",
+        "Wired backend web-services securely with SPA states by consuming custom RESTful endpoints."
       ]
     }
   ],
   "projects": [
     {
       "id": "motomate",
-      "name": "MotoMate",
-      "description": "On-demand fleet servicing and mechanics dispatch portal.",
-      "architecture": "Next.js frontend, Express backend microservices, Redis PubSub geohash dispatcher, PostgreSQL primary database.",
-      "technologies": ["Next.js", "Express.js", "Redis", "PostgreSQL", "Google Maps API", "WebSockets"],
-      "challenges": "Resolving mechanics dispatching races under sudden peak hour demands without dropping websocket connections.",
-      "learnings": "Utilizing Redis Lua scripting to handle atomic token bucket checking and mechanic allocation locks."
+      "name": "MotoMate Fleet & Freelance Portal",
+      "description": "On-demand fleet servicing, scheduling, and multi-tenant freelance dashboard.",
+      "architecture": "NextJS/Angular client apps, Node.js/C# backend microservices, AWS server components, and multi-tenant relational schemas.",
+      "technologies": ["Angular", "NextJS", "Node.js", "C#", "Ionic", "Capacitor", "MongoDB", "Oracle", "AWS", "TypeScript", "Tailwind CSS"],
+      "challenges": "Sychronizing state and scheduling queues across custom Angular dashboards and cross-platform Ionic/Capacitor mobile endpoints.",
+      "learnings": "Implementing streamlined, dry code structures, highly reusable components, and secure RESTful token bridges."
     },
     {
       "id": "risk-system",
-      "name": "Risk Mitigation Engine",
-      "description": "Real-time compliance audit and fraudulent transaction monitoring platform.",
-      "architecture": "Event-driven architecture with Kafka streams, NestJS transaction validator, and PostgreSQL cold storage.",
-      "technologies": ["NestJS", "Apache Kafka", "TypeScript", "PostgreSQL", "Docker"],
-      "challenges": "Ingesting and scoring financial ledger streams with less than 20ms of total validation overhead.",
-      "learnings": "Implementing zero-allocation serialization templates and optimized bulk indexes on compound PostgreSQL keys."
+      "name": "Risk Integration System",
+      "description": "Real-time banking risk evaluator, compliance auditor, and ledger monitoring platform.",
+      "architecture": "Angular 7+ frontend, .NET Core API, MS SQL Server, and custom 3rd-party API ingestion relays.",
+      "technologies": ["Angular", "TypeScript", "C#", "Dot Net Core API", "SQL Server", "Angular Material", "ngx-translate"],
+      "challenges": "Assembling complex multi-level question systems that calculate associated risk values on-the-fly under strict audit rules.",
+      "learnings": "Using declarative reactive forms combined with fine-grained components to manage extremely high inputs without performance lag."
     },
     {
       "id": "telegram-bot",
-      "name": "TradeSync Telegram Bot",
-      "description": "Scalable trading automation, technical alert parser, and Web3 asset tracking bot.",
-      "architecture": "Node.js cluster worker architecture, Telegraf library, SQLite fast transactional logging, and third-party Web3 JSON-RPC proxies.",
-      "technologies": ["Node.js", "Telegraf", "SQLite", "Ethers.js", "Web3 APIs"],
-      "challenges": "Handling high-concurrency channel Webhooks during intense market volatility without dropping execution requests.",
-      "learnings": "Implementing an in-memory priority queue using Redis to process transactions in batch orders with automated sliding-window rate limit backoffs."
+      "name": "Telegram Webhook Bot API",
+      "description": "High-throughput messaging, registry webhook dispatcher, and automated alerts broker.",
+      "architecture": "Event-driven Node.js & Express pipeline connected with Telegraf hooks and SQLite transactional audit log.",
+      "technologies": ["Node.js", "Express JS", "Telegram Bot API", "SQLite", "REST APIs", "JavaScript"],
+      "challenges": "Ensuring high-availability registration and deregistration processes for alert targets under peak traffic spikes.",
+      "learnings": "Implementing streamlined Express-based webhook endpoints with local SQLite persistence for transactional guarantees."
     },
     {
       "id": "pricing",
-      "name": "Dynamic Price Surge Engine",
-      "description": "Surge pricing and demand-supply modeling algorithm for ride-sharing platforms.",
-      "architecture": "FastAPI calculation engine, Redis memory-grid for surge maps, and visual React dashboard.",
-      "technologies": ["FastAPI", "React", "Redis Grid", "Python Data Analytics", "Tailwind CSS"],
-      "challenges": "Recalculating local polygon pricing tiers on-the-fly as user coordinate densities shift.",
-      "learnings": "Leveraging Uber's H3 spatial index system to group geo-coordinates into hexagonal grids, performing instant O(1) adjacency calculations in Redis."
+      "name": "Dynamic Product Pricing System",
+      "description": "Algorithmic pricing calculator computing costs based on custom offers, supply grids, and seasonal parameters.",
+      "architecture": "Angular 12 frontend UI, ag-grid enterprise table datasets, and Java Spring REST core service.",
+      "technologies": ["Angular", "ag-grid", "Java", "TypeScript", "Angular Material", "Bootstrap"],
+      "challenges": "Calculating complex pricing factors dynamically over sliding timeline periods without locking the browser main thread.",
+      "learnings": "Leveraging Web Workers for heavy client calculations paired with custom ag-grid cell renderers to render updates fast."
     },
     {
       "id": "law-practice",
-      "name": "LexSphere Practice Suite",
-      "description": "Legal practice case management, automated document assembly, and structured hourly invoicing application.",
-      "architecture": "Monolithic Express App, React UI, AWS S3 document vaults, and Stripe API billing gateway.",
-      "technologies": ["Express.js", "React.js", "PostgreSQL", "AWS S3", "Stripe API", "PDFKit"],
-      "challenges": "Securing sensitive legal drafts while allowing multi-tenant lawyers to generate and edit files dynamically in-browser.",
-      "learnings": "Implementing AWS S3 Pre-signed URLs for secure direct-upload, coupled with strict Row Level Security (RLS) policies on PostgreSQL."
+      "name": "Law Practice Management Suite",
+      "description": "Legal workflow organizer, case database, and client-facing secure interaction portal.",
+      "architecture": "Angular Client, ASP.NET Core backend API, MS SQL Server relational database, and localization modules.",
+      "technologies": ["Angular", "C#", "Dot Net Core API", "SQL Server", "Bootstrap", "ag-grid", "i18n", "TypeScript"],
+      "challenges": "Enabling fluid, fully localized case updates while keeping strict separation between cases, contacts, and admin actions.",
+      "learnings": "Implementing robust client/contacts/matters hierarchical modules mapped over optimized database views."
     },
     {
       "id": "engagement-review",
-      "name": "EchoPulse Review Hub",
-      "description": "Corporate 360 review, performance logging, and team sentiment feedback tracker.",
-      "architecture": "React Client, Node.js API, MongoDB document storage, and HuggingFace sentiment API integration.",
-      "technologies": ["React", "Node.js", "MongoDB", "HuggingFace API", "Recharts"],
-      "challenges": "Anonymizing sensitive peer-reviews while generating rich aggregate performance analytics for managers.",
-      "learnings": "Utilizing dynamic data hashing and k-anonymity checks to block manager-level identification of individual team responses."
+      "name": "Engagement Review Portal",
+      "description": "Interactive employee peer appraisal, multi-level review workflows, and corporate satisfaction auditing platform.",
+      "architecture": "Modular Angular SPA, ASP.NET Web API 2, and MS SQL Server background tasks.",
+      "technologies": ["Angular", "C#", "ASP.NET Web API 2", "SQL Server", "Angular Material", "ngx-bootstrap", "TypeScript"],
+      "challenges": "Designing custom questionnaire builder panels where administrators define dynamic appraisal templates.",
+      "learnings": "Developing highly-flexible, data-driven templates using Angular directive composition and optimized scheduled database routines."
     }
   ],
   "articles": [
@@ -138,7 +179,7 @@
       "title": "Advanced Change Detection and Zone.js Optimization in Angular",
       "summary": "Deep dive into Zone.js, the Ivy renderer, and how to surgically run operations outside Angular's core check loop to unlock flawless 60fps animations.",
       "date": "2024-11-08",
-      "content": "# Advanced Change Detection and Zone.js Optimization in Angular\n\nAngular is incredibly fast out of the box, but as application scale grows, you might notice lag in typing inputs, drag-and-drop triggers, or animations. Most of this performance degradation stems from **Zone.js** triggers initiating global Change Detection on minor browser events.\n\n## The Core Problem: Zone.js Monkey Patching\nZone.js patches all standard asynchronous browser APIs (including `setTimeout`, `Promise.then`, `addEventListener`, and HTTP requests). Whenever any of these trigger, Zone.js tells Angular to scan the entire component tree from top to bottom checking for model updates.\n\nIn heavy real-time pages (like stock charts or canvases), a single mousemove event can trigger change detection 60 times a second, recalculating unrelated templates.\n\n## Strategy 1: surgical `runOutsideAngular`\nIf you have a fast-firing event (e.g., listening to scroll positions or canvas drag), you must bypass Zone.js completely using `NgZone`:\n\n```typescript\nimport { Component, OnInit, ElementRef, ViewChild, NgZone } from '@angular/core';\n\n@Component({\n  selector: 'app-canvas-painter',\n  template: `<div #canvasContainer class=\"canvas-box\"></div>` \n})\nexport class CanvasPainterComponent implements OnInit {\n  @ViewChild('canvasContainer', { static: true }) canvasBox!: ElementRef;\n\n  constructor(private ngZone: NgZone) {}\n\n  ngOnInit() {\n    // surgically bind event listener OUTSIDE of Angular's core digest\n    this.ngZone.runOutsideAngular(() => {\n      this.canvasBox.nativeElement.addEventListener('mousemove', (e: MouseEvent) => {\n        this.drawOnScreen(e.clientX, e.clientY);\n      });\n    });\n  }\n\n  drawOnScreen(x: number, y: number) {\n    // Performance-critical manipulation bypassing Angular bindings\n    const box = this.canvasBox.nativeElement;\n    box.style.transform = `translate3d(${x}px, ${y}px, 0)`;\n  }\n}\n```\n\n## Strategy 2: Default to `OnPush` Change Detection\nBy default, Angular uses the `ChangeDetectionStrategy.Default` strategy, which checks every component on every cycle. By switching to `ChangeDetectionStrategy.OnPush`, you tell Angular to **only** check this component and its children if:\n- An `@Input()` reference changes.\n- An event is fired directly from the component's template.\n- You explicitly trigger detection using `ChangeDetectorRef.markForCheck()`.\n\n```typescript\nimport { Component, ChangeDetectionStrategy } from '@angular/core';\n\n@Component({\n  selector: 'app-stats-row',\n  templateUrl: './stats-row.component.html',\n  changeDetection: ChangeDetectionStrategy.OnPush\n})\nexport class StatsRowComponent {\n  // Angular will not run expensive tree checks unless inputs change!\n}\n```\n\n## Summary\nBy pairing `OnPush` components with selected `runOutsideAngular` loops, you can keep your main bundle footprint incredibly reactive and reach 60FPS on complex canvas interactions."
+      "content": "# Advanced Change Detection and Zone.js Optimization in Angular\n\nAngular is incredibly fast out of the box, but as application scale grows, you might notice lag in typing inputs, drag-and-drop triggers, or animations. Most of this performance degradation stems from **Zone.js** triggers initiating global Change Detection on minor browser events.\n\n## The Core Problem: Zone.js Monkey Patching\nZone.js patches all standard asynchronous browser APIs (including `setTimeout`, `Promise.then`, `addEventListener`, and HTTP requests). Whenever any of these trigger, Zone.js tells Angular to scan the entire component tree from top to bottom checking for model updates.\n\nIn heavy real-time pages (like stock charts or canvases), a single mousemove event can trigger change detection 60 times a second, recalculating unrelated templates.\n\n## Strategy 1: surgical `runOutsideAngular`\nIf you have a fast-firing event (e.g., listening to scroll positions or canvas drag), you must bypass Zone.js completely using `NgZone`:\n\n```typescript\nimport { Component, OnInit, ElementRef, ViewChild, NgZone } from '@angular/core';\n\n@Component({\n  selector: 'app-canvas-painter',\n  template: `<div #canvasContainer class=\"canvas-box\"></div>` \n})\nexport class CanvasPainterComponent implements OnInit {\n  @ViewChild('canvasContainer', { static: true }) canvasBox!: ElementRef;\n\n  constructor(private ngZone: NgZone) {}\n\n  ngOnInit() {\n    // surgically bind event listener OUTSIDE of Angular's core digest\n    this.ngZone.runOutsideAngular(() => {\n      this.canvasBox.nativeElement.addEventListener('mousemove', (e: MouseEvent) => {\n        this.drawOnScreen(e.clientX, e.clientY);\n      });\n    });\n  }\n\n  drawOnScreen(x: number, y: number) {\n    // Performance-critical manipulation bypassing Angular bindings\n    const box = this.canvasBox.nativeElement;\n    box.style.transform = `translate3d(${x}px, ${y}px, 0)`;\n  }\n}\n```\n\n## Summary\nBy pairing `OnPush` components with selected `runOutsideAngular` loops, you can keep your main bundle footprint incredibly reactive and reach 60FPS on complex canvas interactions."
     },
     {
       "slug": "aws-ses",
