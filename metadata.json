@@ -1,0 +1,6 @@
+{
+  "name": "Terminal Portfolio",
+  "description": "A fully-interactive retro Linux terminal developer portfolio website for Ashwani Kumar.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

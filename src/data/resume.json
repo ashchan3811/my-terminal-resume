@@ -1,0 +1,151 @@
+{
+  "personal": {
+    "name": "Ashwani Kumar",
+    "title": "Senior Full Stack Engineer",
+    "location": "India",
+    "email": "ashwanikumar3811@gmail.com",
+    "github": "https://github.com/ashwani3811",
+    "linkedin": "https://linkedin.com/in/ashwani3811",
+    "website": "https://ashwani.dev",
+    "bio": "Senior Full Stack Engineer with 10+ years of expertise in crafting resilient web architectures, highly-scalable backend microservices, and slick, responsive frontends. Specialized in Node.js, React, Angular, AWS, and distributed database tuning."
+  },
+  "skills": {
+    "Frontend": [
+      { "name": "React / Next.js", "level": 96 },
+      { "name": "Angular", "level": 95 },
+      { "name": "TypeScript", "level": 98 },
+      { "name": "Tailwind CSS", "level": 95 },
+      { "name": "Redux / Zustand", "level": 92 }
+    ],
+    "Backend": [
+      { "name": "Node.js / Express", "level": 97 },
+      { "name": "NestJS", "level": 94 },
+      { "name": "Python (FastAPI / Django)", "level": 88 },
+      { "name": "Go (Golang)", "level": 85 },
+      { "name": "GraphQL / REST APIs", "level": 95 }
+    ],
+    "Databases": [
+      { "name": "PostgreSQL", "level": 94 },
+      { "name": "Redis (Caching & Streams)", "level": 96 },
+      { "name": "MongoDB", "level": 90 },
+      { "name": "MySQL", "level": 88 }
+    ],
+    "Cloud & DevOps": [
+      { "name": "AWS (EC2, ECS, Lambda, SES)", "level": 92 },
+      { "name": "Docker / Containerization", "level": 94 },
+      { "name": "CI/CD (GitHub Actions / Jenkins)", "level": 90 },
+      { "name": "Kubernetes", "level": 82 }
+    ]
+  },
+  "experience": [
+    {
+      "period": "2022 - Present",
+      "company": "Independent Consultant / Freelance",
+      "role": "Senior Full Stack Engineer",
+      "highlights": [
+        "Architected and delivered custom enterprise solutions for multi-tenant SaaS clients globally, leveraging Next.js, Node.js, and Serverless AWS frameworks.",
+        "Engineered 'motomate', an on-demand fleet-servicing application which reduced dispatch latency by 35% using geohashing and WebSockets.",
+        "Tuned heavy database architectures to support up to 5,000 requests per second, achieving a 45% reduction in PostgreSQL CPU consumption via aggressive query analysis and Redis buffering."
+      ]
+    },
+    {
+      "period": "2022",
+      "company": "Turing",
+      "role": "Senior Engineer",
+      "highlights": [
+        "Vetted and collaborated with elite engineering talent worldwide to build robust server architectures for high-growth US startups.",
+        "Refactored complex state management layers in legacy Angular systems to modern reactive patterns, leading to 50% faster UI paint speeds.",
+        "Created scalable third-party APIs using NestJS and unified authentication filters using JSON Web Tokens and Redis-backed session revoking."
+      ]
+    },
+    {
+      "period": "2016 - 2022",
+      "company": "TCS (Tata Consultancy Services)",
+      "role": "Lead System Engineer",
+      "highlights": [
+        "Promoted rapidly from Assistant Systems Engineer to Lead Systems Engineer owing to strong execution of banking compliance architectures.",
+        "Headed a team of 6 developers in designing a real-time risk mitigation and transaction monitoring pipeline for global financial clients, reducing fraudulent alert overhead by 22%.",
+        "Pioneered the adoption of TypeScript and clean architecture principles within the branch division, conducting workshops and drafting strict lint rules."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "motomate",
+      "name": "MotoMate",
+      "description": "On-demand fleet servicing and mechanics dispatch portal.",
+      "architecture": "Next.js frontend, Express backend microservices, Redis PubSub geohash dispatcher, PostgreSQL primary database.",
+      "technologies": ["Next.js", "Express.js", "Redis", "PostgreSQL", "Google Maps API", "WebSockets"],
+      "challenges": "Resolving mechanics dispatching races under sudden peak hour demands without dropping websocket connections.",
+      "learnings": "Utilizing Redis Lua scripting to handle atomic token bucket checking and mechanic allocation locks."
+    },
+    {
+      "id": "risk-system",
+      "name": "Risk Mitigation Engine",
+      "description": "Real-time compliance audit and fraudulent transaction monitoring platform.",
+      "architecture": "Event-driven architecture with Kafka streams, NestJS transaction validator, and PostgreSQL cold storage.",
+      "technologies": ["NestJS", "Apache Kafka", "TypeScript", "PostgreSQL", "Docker"],
+      "challenges": "Ingesting and scoring financial ledger streams with less than 20ms of total validation overhead.",
+      "learnings": "Implementing zero-allocation serialization templates and optimized bulk indexes on compound PostgreSQL keys."
+    },
+    {
+      "id": "telegram-bot",
+      "name": "TradeSync Telegram Bot",
+      "description": "Scalable trading automation, technical alert parser, and Web3 asset tracking bot.",
+      "architecture": "Node.js cluster worker architecture, Telegraf library, SQLite fast transactional logging, and third-party Web3 JSON-RPC proxies.",
+      "technologies": ["Node.js", "Telegraf", "SQLite", "Ethers.js", "Web3 APIs"],
+      "challenges": "Handling high-concurrency channel Webhooks during intense market volatility without dropping execution requests.",
+      "learnings": "Implementing an in-memory priority queue using Redis to process transactions in batch orders with automated sliding-window rate limit backoffs."
+    },
+    {
+      "id": "pricing",
+      "name": "Dynamic Price Surge Engine",
+      "description": "Surge pricing and demand-supply modeling algorithm for ride-sharing platforms.",
+      "architecture": "FastAPI calculation engine, Redis memory-grid for surge maps, and visual React dashboard.",
+      "technologies": ["FastAPI", "React", "Redis Grid", "Python Data Analytics", "Tailwind CSS"],
+      "challenges": "Recalculating local polygon pricing tiers on-the-fly as user coordinate densities shift.",
+      "learnings": "Leveraging Uber's H3 spatial index system to group geo-coordinates into hexagonal grids, performing instant O(1) adjacency calculations in Redis."
+    },
+    {
+      "id": "law-practice",
+      "name": "LexSphere Practice Suite",
+      "description": "Legal practice case management, automated document assembly, and structured hourly invoicing application.",
+      "architecture": "Monolithic Express App, React UI, AWS S3 document vaults, and Stripe API billing gateway.",
+      "technologies": ["Express.js", "React.js", "PostgreSQL", "AWS S3", "Stripe API", "PDFKit"],
+      "challenges": "Securing sensitive legal drafts while allowing multi-tenant lawyers to generate and edit files dynamically in-browser.",
+      "learnings": "Implementing AWS S3 Pre-signed URLs for secure direct-upload, coupled with strict Row Level Security (RLS) policies on PostgreSQL."
+    },
+    {
+      "id": "engagement-review",
+      "name": "EchoPulse Review Hub",
+      "description": "Corporate 360 review, performance logging, and team sentiment feedback tracker.",
+      "architecture": "React Client, Node.js API, MongoDB document storage, and HuggingFace sentiment API integration.",
+      "technologies": ["React", "Node.js", "MongoDB", "HuggingFace API", "Recharts"],
+      "challenges": "Anonymizing sensitive peer-reviews while generating rich aggregate performance analytics for managers.",
+      "learnings": "Utilizing dynamic data hashing and k-anonymity checks to block manager-level identification of individual team responses."
+    }
+  ],
+  "articles": [
+    {
+      "slug": "redis-event-bus",
+      "title": "Building a High-Throughput Event Bus with Redis Streams",
+      "summary": "Redis is often overlooked for persistent messaging. Here's how to build a reliable event bus that guarantees at-least-once delivery with consumer groups.",
+      "date": "2025-02-14",
+      "content": "# Building a High-Throughput Event Bus with Redis Streams\n\nWhen developers need a message broker, they often default to **RabbitMQ** or **Apache Kafka**. While these are excellent, they introduce significant operational overhead. If you already have Redis in your stack, **Redis Streams** (introduced in Redis 5.0) provides an incredibly fast, persistent, and low-latency alternative.\n\n## Why Redis Streams?\nUnlike standard Redis Pub/Sub, Redis Streams are **durable and persistent** on disk. They also support **Consumer Groups**, allowing you to distribute workload across multiple worker nodes while keeping track of which consumer has acknowledged which message.\n\n### Core Concept: Consumer Groups\nRedis consumer groups partition incoming stream records so that each message goes to a single consumer in the group. It tracks:\n1. **Last Delivered ID**: Keeps track of message history progress.\n2. **Pending Entries List (PEL)**: Messages delivered but not yet acknowledged (`XACK`).\n\n```bash\n# Creating a consumer group in Redis\n> XGROUP CREATE my_stream my_group $ MKSTREAM\n```\n\n## Implementation in Node.js\nBelow is a resilient implementation of a background worker consuming from a Redis Stream using the standard `ioredis` driver:\n\n```typescript\nimport Redis from 'ioredis';\n\nconst redis = new Redis();\nconst STREAM_KEY = 'events:user_signup';\nconst GROUP_NAME = 'billing_processors';\nconst CONSUMER_ID = `worker_${process.pid}`;\n\nasync function startWorker() {\n  while (true) {\n    try {\n      // Read messages that haven't been delivered to any consumer yet ('>')\n      const response = await redis.xreadgroup(\n        'GROUP', GROUP_NAME, CONSUMER_ID,\n        'COUNT', '10',\n        'BLOCK', '2000',\n        'STREAMS', STREAM_KEY, '>'\n      );\n\n      if (!response) continue;\n\n      const [_, messages] = response[0];\n      for (const [msgId, fields] of messages) {\n        const data = parseFields(fields);\n        console.log(`Processing message ${msgId}:`, data);\n\n        // Simulate billing setup\n        await setupBilling(data.userId);\n\n        // Acknowledge receipt\n        await redis.xack(STREAM_KEY, GROUP_NAME, msgId);\n      }\n    } catch (error) {\n      console.error('Error processing stream message:', error);\n      await sleep(1000); // Backoff\n    }\n  } \n}\n```\n\n## Conclusion\nRedis Streams can easily push **100k+ operations per second** with sub-millisecond response times. For 90% of medium-to-large SaaS workloads, this eliminates the need for managing heavier messaging infrastructures while retaining transactional integrity."
+    },
+    {
+      "slug": "angular-performance",
+      "title": "Advanced Change Detection and Zone.js Optimization in Angular",
+      "summary": "Deep dive into Zone.js, the Ivy renderer, and how to surgically run operations outside Angular's core check loop to unlock flawless 60fps animations.",
+      "date": "2024-11-08",
+      "content": "# Advanced Change Detection and Zone.js Optimization in Angular\n\nAngular is incredibly fast out of the box, but as application scale grows, you might notice lag in typing inputs, drag-and-drop triggers, or animations. Most of this performance degradation stems from **Zone.js** triggers initiating global Change Detection on minor browser events.\n\n## The Core Problem: Zone.js Monkey Patching\nZone.js patches all standard asynchronous browser APIs (including `setTimeout`, `Promise.then`, `addEventListener`, and HTTP requests). Whenever any of these trigger, Zone.js tells Angular to scan the entire component tree from top to bottom checking for model updates.\n\nIn heavy real-time pages (like stock charts or canvases), a single mousemove event can trigger change detection 60 times a second, recalculating unrelated templates.\n\n## Strategy 1: surgical `runOutsideAngular`\nIf you have a fast-firing event (e.g., listening to scroll positions or canvas drag), you must bypass Zone.js completely using `NgZone`:\n\n```typescript\nimport { Component, OnInit, ElementRef, ViewChild, NgZone } from '@angular/core';\n\n@Component({\n  selector: 'app-canvas-painter',\n  template: `<div #canvasContainer class=\"canvas-box\"></div>` \n})\nexport class CanvasPainterComponent implements OnInit {\n  @ViewChild('canvasContainer', { static: true }) canvasBox!: ElementRef;\n\n  constructor(private ngZone: NgZone) {}\n\n  ngOnInit() {\n    // surgically bind event listener OUTSIDE of Angular's core digest\n    this.ngZone.runOutsideAngular(() => {\n      this.canvasBox.nativeElement.addEventListener('mousemove', (e: MouseEvent) => {\n        this.drawOnScreen(e.clientX, e.clientY);\n      });\n    });\n  }\n\n  drawOnScreen(x: number, y: number) {\n    // Performance-critical manipulation bypassing Angular bindings\n    const box = this.canvasBox.nativeElement;\n    box.style.transform = `translate3d(${x}px, ${y}px, 0)`;\n  }\n}\n```\n\n## Strategy 2: Default to `OnPush` Change Detection\nBy default, Angular uses the `ChangeDetectionStrategy.Default` strategy, which checks every component on every cycle. By switching to `ChangeDetectionStrategy.OnPush`, you tell Angular to **only** check this component and its children if:\n- An `@Input()` reference changes.\n- An event is fired directly from the component's template.\n- You explicitly trigger detection using `ChangeDetectorRef.markForCheck()`.\n\n```typescript\nimport { Component, ChangeDetectionStrategy } from '@angular/core';\n\n@Component({\n  selector: 'app-stats-row',\n  templateUrl: './stats-row.component.html',\n  changeDetection: ChangeDetectionStrategy.OnPush\n})\nexport class StatsRowComponent {\n  // Angular will not run expensive tree checks unless inputs change!\n}\n```\n\n## Summary\nBy pairing `OnPush` components with selected `runOutsideAngular` loops, you can keep your main bundle footprint incredibly reactive and reach 60FPS on complex canvas interactions."
+    },
+    {
+      "slug": "aws-ses",
+      "title": "Maximizing Email Deliverability: DKIM, SPF, and AWS SES Tuning",
+      "summary": "Emails landing in spam? Learn how to configure modern DNS records, handle bounces via SNS, and configure AWS SES to maintain a perfect sender reputation.",
+      "date": "2024-06-21",
+      "content": "# Maximizing Email Deliverability: DKIM, SPF, and AWS SES Tuning\n\nSending an email is easy. Ensuring it actually lands in your recipient's **Inbox** rather than their **Spam/Promotions** folder is a science. Gmail and Yahoo introduced strict authentication requirements, making SPF, DKIM, and DMARC configuration non-negotiable for anyone sending mass or transactional mail.\n\n## 1. The Trinity of DNS Authentication\nTo prove to receiving mail servers that you are who you say you are, you must configure three primary records in your DNS console:\n\n### A. SPF (Sender Policy Framework)\nSPF specifies which IP addresses are authorized to send email on behalf of your domain.\n\n```text\n# DNS TXT Record\nHost: @\nValue: v=spf1 include:amazonses.com ~all\n```\n\n### B. DKIM (DomainKeys Identified Mail)\nDKIM adds a cryptographic signature to every email header. Receiving servers use your public DNS key to verify that the email body wasn't altered in transit.\nAWS SES makes this easy by offering **Easy DKIM**, providing three CNAME records to publish.\n\n### C. DMARC (Domain-based Message Authentication, Reporting, and Conformance)\nDMARC tells receiving servers what to do if an email fails SPF or DKIM checks. Start with a monitoring policy (`p=none`) and move to rejection (`p=reject`) once verified.\n\n```text\n# DNS TXT Record\nHost: _dmarc.yourdomain.com\nValue: v=DMARC1; p=quarantine; pct=100; rua=mailto:dmarc-reports@yourdomain.com\n```\n\n## 2. Setting Up an SES Bounce & Complaint Pipeline\nAWS SES will suspend your sending capabilities if your **Bounce rate exceed 10%** or your **Complaint rate exceeds 0.1%**. You must actively handle these reports.\n\n```\n+---------+     Bounce/Complaint     +---------+     Trigger     +---------------+     Block Database\n| AWS SES | -----------------------> | AWS SNS | --------------> | Lambda Worker | ------------------> User Account\n+---------+                          +---------+                 +---------------+     (Suppress email)\n```\n\n### Resilient Lambda Consumer Example\nWe can route SNS bounce events to an AWS Lambda function which flags problematic accounts in our PostgreSQL DB:\n\n```typescript\nimport { Handler } from 'aws-lambda';\nimport { Client } from 'pg';\n\nexport const handler: Handler = async (event) => {\n  const client = new Client({ connectionString: process.env.DATABASE_URL });\n  await client.connect();\n\n  for (const record of event.Records) {\n    const snsMessage = JSON.parse(record.Sns.Message);\n    \n    if (snsMessage.notificationType === 'Bounce') {\n      const bounce = snsMessage.bounce;\n      for (const recipient of bounce.bouncedRecipients) {\n        console.warn(`Bounced Email Detected: ${recipient.emailAddress}`);\n        // Flag email in DB to suppress future marketing attempts\n        await client.query(\n          'UPDATE users SET email_status = $1 WHERE email = $2',\n          ['BOUNCED', recipient.emailAddress]\n        );\n      }\n    }\n  }\n  \n  await client.end();\n  return { statusCode: 200 };\n};\n```\n\n## Conclusion\nDeliverability is built on **trust**. By combining secure cryptographic records with a real-time reactive feedback loop to suppress invalid or complaining emails, your domain reputation stays pristine, guaranteeing high placement across modern email providers."
+    }
+  ]
+}
