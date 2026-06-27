@@ -142,7 +142,7 @@ export default function Terminal() {
             return next;
           });
           
-          let nextFood;
+          let nextFood: { x: number; y: number };
           do {
             nextFood = {
               x: Math.floor(Math.random() * GRID_W),
@@ -1360,7 +1360,7 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
       <MatrixBackground active={matrixActive} />
 
       {/* Geometric Balance Outer Frame & Layout container */}
-      <div className="flex-1 flex flex-col border-[12px] border-[#1A1F29] overflow-hidden relative">
+      <div className="flex-1 flex flex-col border-12 border-[#1A1F29] overflow-hidden relative">
         
         {/* Terminal Header Bar */}
         <div className="h-8 bg-[#1A1F29] flex items-center px-4 justify-between border-b border-[#0A0E14] select-none shrink-0 z-10">
