@@ -17,9 +17,10 @@
     "setup": "Open to work as part of a team (currently individual, can scale and bring additional team members if needed)"
   },
   "best_skills": [
-    "Angular (Latest Angular 19)",
-    "React JS / Next JS / Tailwind CSS",
+    "Angular (Latest Angular 22)",
     "Node.js (Express & NestJS)",
+    "AWS",
+    "React JS / Next JS / Tailwind CSS",
     "C# (.NET Core & ASP.NET Web APIs)",
     "Database Optimization (SQL Server, PostgreSQL, MongoDB)"
   ],
