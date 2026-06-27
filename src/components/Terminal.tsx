@@ -10,7 +10,8 @@ const COMMANDS_LIST = [
   "skills", "stack", "opensource", "blog", "articles", "contact", "hireme", "hire",
   "github", "linkedin", "website", "theme", "matrix", "clear", "history",
   "pwd", "ls", "dir", "cd", "cat", "echo", "date", "time", "weather", "sudo",
-  "coffee", "joke", "exit", "ai", "search", "telemetry", "activity", "github-graph", "snake"
+  "coffee", "joke", "exit", "ai", "search", "telemetry", "activity", "github-graph", "snake",
+  "hi", "hello", "howareyou"
 ];
 
 // Staggered boot sequence lines
@@ -142,7 +143,7 @@ export default function Terminal() {
             return next;
           });
           
-          let nextFood: { x: number; y: number };
+          let nextFood;
           do {
             nextFood = {
               x: Math.floor(Math.random() * GRID_W),
@@ -777,11 +778,104 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
     const cmd = parts[0].toLowerCase();
     const args = parts.slice(1);
 
+    // Normalize input to find conversational intents
+    const cleanInput = trimmed.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim();
+
+    const isGreeting = (str: string) => {
+      const greets = ["hi", "hello", "hey", "hellow", "hola", "greetings", "yo", "sup", "whatsup", "whats up"];
+      return greets.includes(str);
+    };
+
+    const isHowAreYou = (str: string) => {
+      return str === "how are you" || str === "howareyou" || str === "how-are-you" || str === "how are u" || str === "how r u" || str === "how you doing";
+    };
+
+    const isProjectsQuery = (str: string) => {
+      const words = str.split(" ");
+      const hasProjects = words.includes("projects") || words.includes("project");
+      const hasAction = words.some(w => ["show", "list", "what", "tell", "view", "display", "get", "about", "see"].includes(w));
+      return (hasProjects && hasAction) || str === "show projects" || str === "list projects" || str === "all projects" || str === "tell me about projects" || str === "tell me about your projects";
+    };
+
+    const isSkillsQuery = (str: string) => {
+      const words = str.split(" ");
+      const hasSkills = words.includes("skills") || words.includes("skill") || words.includes("stack") || words.includes("technologies") || words.includes("tech");
+      const hasAction = words.some(w => ["show", "list", "what", "tell", "view", "display", "get", "about", "your", "see"].includes(w));
+      return (hasSkills && hasAction) || str === "show skills" || str === "list skills" || str === "tech stack" || str === "skills list" || str === "tell me about your skills";
+    };
+
+    const isExperienceQuery = (str: string) => {
+      const words = str.split(" ");
+      const hasExperience = words.includes("experience") || words.includes("work") || words.includes("history") || words.includes("career") || words.includes("timeline") || words.includes("jobs") || words.includes("background");
+      const hasAction = words.some(w => ["show", "list", "what", "tell", "view", "display", "get", "about", "where", "worked", "see"].includes(w));
+      return (hasExperience && hasAction) || str === "show experience" || str === "list experience" || str === "where did you work" || str === "work history" || str === "tell me about your experience";
+    };
+
+    let resolvedCmd = cmd;
+    let resolvedArgs = args;
+
+    // Check matching sequence
+    const matchedProj = resumeData.projects.find(p => cleanInput.includes(p.id.toLowerCase()));
+    const matchedArt = resumeData.articles.find(a => cleanInput.includes(a.slug.toLowerCase()));
+
+    if (isGreeting(cleanInput)) {
+      resolvedCmd = "greet";
+    } else if (isHowAreYou(cleanInput)) {
+      resolvedCmd = "howareyouquery";
+    } else if (matchedProj && (cleanInput.includes("show") || cleanInput.includes("tell") || cleanInput.includes("about") || cleanInput.includes("project") || cleanInput.includes("what is") || cleanInput.includes("view"))) {
+      resolvedCmd = "project";
+      resolvedArgs = [matchedProj.id];
+    } else if (matchedArt && (cleanInput.includes("show") || cleanInput.includes("tell") || cleanInput.includes("about") || cleanInput.includes("article") || cleanInput.includes("read") || cleanInput.includes("blog"))) {
+      resolvedCmd = "article";
+      resolvedArgs = [matchedArt.slug];
+    } else if (isProjectsQuery(cleanInput)) {
+      resolvedCmd = "projects";
+    } else if (isSkillsQuery(cleanInput)) {
+      resolvedCmd = "skills";
+    } else if (isExperienceQuery(cleanInput)) {
+      resolvedCmd = "experience";
+    }
+
     setIsExecuting(true);
     let output = "";
 
     try {
-      switch (cmd) {
+      switch (resolvedCmd) {
+        case "hi":
+        case "hello":
+        case "hellow":
+        case "hey":
+        case "hola":
+        case "greetings":
+        case "yo":
+        case "greet":
+          output = `Hello there! 👋 Welcome to Ashwani's Portfolio Shell. 
+I am an interactive terminal system ready to assist you.
+
+Try these commands to learn more about Ashwani:
+  ✦ "about"      - Short bio and professional focus
+  ✦ "projects"   - Interactive breakdown of engineering projects
+  ✦ "skills"     - Core tech stack & competency ratings
+  ✦ "experience" - Career history and technical highlights
+  ✦ "contact"    - Get in touch or view social media hubs
+  ✦ "ai <query>" - Ask anything to my integrated Gemini Assistant!
+
+Or type "help" for the full manual. How can I help you today?`;
+          break;
+
+        case "howareyou":
+        case "how-are-you":
+        case "howareyouquery":
+          output = `I am operating at peak efficiency! 🚀 
+
+System Status:
+  - CPU usage:  ${cpu}%
+  - Memory:     ${mem}GB/16GB VRAM
+  - Shell Link: Fully multiplexed secured session
+  - Mood:       Excited to showcase some highly optimized backend solutions!
+
+How are you doing today? Feel free to ask me any questions or test my capabilities!`;
+          break;
         case "help":
           output = `Available Commands:
 -----------------------------------------------------------------------------
@@ -1360,7 +1454,7 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
       <MatrixBackground active={matrixActive} />
 
       {/* Geometric Balance Outer Frame & Layout container */}
-      <div className="flex-1 flex flex-col border-12 border-[#1A1F29] overflow-hidden relative">
+      <div className="flex-1 flex flex-col border-[12px] border-[#1A1F29] overflow-hidden relative">
         
         {/* Terminal Header Bar */}
         <div className="h-8 bg-[#1A1F29] flex items-center px-4 justify-between border-b border-[#0A0E14] select-none shrink-0 z-10">
