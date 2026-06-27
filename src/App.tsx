@@ -3,7 +3,7 @@ import CRTOverlay from "./components/CRTOverlay";
 
 export default function App() {
   return (
-    <div className="relative min-h-screen w-full bg-[#000]">
+    <div className="relative min-h-screen w-full bg-black">
       <Terminal />
       <CRTOverlay />
     </div>

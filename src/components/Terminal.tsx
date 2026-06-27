@@ -1,17 +1,68 @@
-import { useState, useEffect, useRef, FormEvent, KeyboardEvent, useMemo } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  FormEvent,
+  KeyboardEvent,
+  useMemo,
+} from "react";
 import { motion } from "motion/react";
-import { Terminal as TerminalIcon, Sparkles, Folder, FileText, CheckCircle2 } from "lucide-react";
+import {
+  Terminal as TerminalIcon,
+  Sparkles,
+  Folder,
+  FileText,
+  CheckCircle2,
+} from "lucide-react";
 import { THEMES, Theme, HistoryItem, FileSystemNode } from "../types";
 import resumeData from "../data/resume.json";
 import MatrixBackground from "./MatrixBackground";
 
 const COMMANDS_LIST = [
-  "help", "about", "whoareyou", "resume", "projects", "project", "experience",
-  "skills", "stack", "opensource", "blog", "articles", "contact", "hireme", "hire",
-  "github", "linkedin", "website", "theme", "matrix", "clear", "history",
-  "pwd", "ls", "dir", "cd", "cat", "echo", "date", "time", "weather", "sudo",
-  "coffee", "joke", "exit", "ai", "search", "telemetry", "activity", "github-graph", "snake",
-  "hi", "hello", "howareyou"
+  "help",
+  "about",
+  "whoareyou",
+  "resume",
+  "projects",
+  "project",
+  "experience",
+  "skills",
+  "stack",
+  "opensource",
+  "blog",
+  "articles",
+  "contact",
+  "hireme",
+  "hire",
+  "github",
+  "linkedin",
+  "website",
+  "theme",
+  "matrix",
+  "clear",
+  "history",
+  "pwd",
+  "ls",
+  "dir",
+  "cd",
+  "cat",
+  "echo",
+  "date",
+  "time",
+  "weather",
+  "sudo",
+  "coffee",
+  "joke",
+  "exit",
+  "ai",
+  "search",
+  "telemetry",
+  "activity",
+  "github-graph",
+  "snake",
+  "hi",
+  "hello",
+  "howareyou",
 ];
 
 // Staggered boot sequence lines
@@ -22,7 +73,7 @@ const BOOT_LINES = [
   "Loading Projects [motomate, risk-system, telegram-bot, pricing, law-practice, engagement-review] [OK]",
   "Loading Resume & Credentials for Ashwani Kumar... [OK]",
   "Connecting virtual telemetry bridge to ashwani.dev...",
-  "Access granted. Secure terminal ready."
+  "Access granted. Secure terminal ready.",
 ];
 
 export default function Terminal() {
@@ -36,7 +87,9 @@ export default function Terminal() {
   const [bootIndex, setBootIndex] = useState(0);
   const [matrixActive, setMatrixActive] = useState(false);
   const [crtActive, setCrtActive] = useState(true);
-  const [aiHistory, setAiHistory] = useState<Array<{ role: string; content: string }>>([]);
+  const [aiHistory, setAiHistory] = useState<
+    Array<{ role: string; content: string }>
+  >([]);
   const [isExecuting, setIsExecuting] = useState(false);
 
   // Retro Terminal Snake Game state
@@ -44,14 +97,19 @@ export default function Terminal() {
   const [snake, setSnake] = useState<Array<{ x: number; y: number }>>([
     { x: 10, y: 5 },
     { x: 9, y: 5 },
-    { x: 8, y: 5 }
+    { x: 8, y: 5 },
   ]);
-  const [direction, setDirection] = useState<"UP" | "DOWN" | "LEFT" | "RIGHT">("RIGHT");
+  const [direction, setDirection] = useState<"UP" | "DOWN" | "LEFT" | "RIGHT">(
+    "RIGHT",
+  );
   const [food, setFood] = useState<{ x: number; y: number }>({ x: 15, y: 5 });
   const [gameScore, setGameScore] = useState(0);
   const [gameHighScore, setGameHighScore] = useState(() => {
     try {
-      return parseInt(localStorage.getItem("terminal_snake_highscore") || "0", 10);
+      return parseInt(
+        localStorage.getItem("terminal_snake_highscore") || "0",
+        10,
+      );
     } catch {
       return 0;
     }
@@ -70,16 +128,22 @@ export default function Terminal() {
         return Math.max(5, Math.min(95, prev + change));
       });
       setMem((prev) => {
-        const change = (Math.random() * 0.2) - 0.1;
+        const change = Math.random() * 0.2 - 0.1;
         const next = parseFloat((prev + change).toFixed(1));
         return Math.max(2.1, Math.min(15.8, next));
       });
     }, 3000);
 
     const uptimeInterval = setInterval(() => {
-      const elapsedSeconds = Math.floor((Date.now() - startTimeRef.current) / 1000);
-      const hrs = Math.floor(elapsedSeconds / 3600).toString().padStart(2, "0");
-      const mins = Math.floor((elapsedSeconds % 3600) / 60).toString().padStart(2, "0");
+      const elapsedSeconds = Math.floor(
+        (Date.now() - startTimeRef.current) / 1000,
+      );
+      const hrs = Math.floor(elapsedSeconds / 3600)
+        .toString()
+        .padStart(2, "0");
+      const mins = Math.floor((elapsedSeconds % 3600) / 60)
+        .toString()
+        .padStart(2, "0");
       const secs = (elapsedSeconds % 60).toString().padStart(2, "0");
       setUptime(`${hrs}:${mins}:${secs}`);
     }, 1000);
@@ -115,14 +179,16 @@ export default function Terminal() {
 
         const GRID_W = 40;
         const GRID_H = 18;
-        
+
         // Wall or Segment collision check
         if (
           head.x < 0 ||
           head.x >= GRID_W ||
           head.y < 0 ||
           head.y >= GRID_H ||
-          prevSnake.some((segment) => segment.x === head.x && segment.y === head.y)
+          prevSnake.some(
+            (segment) => segment.x === head.x && segment.y === head.y,
+          )
         ) {
           setIsGameOver(true);
           return prevSnake;
@@ -137,19 +203,24 @@ export default function Terminal() {
             if (next > gameHighScore) {
               setGameHighScore(next);
               try {
-                localStorage.setItem("terminal_snake_highscore", next.toString());
+                localStorage.setItem(
+                  "terminal_snake_highscore",
+                  next.toString(),
+                );
               } catch {}
             }
             return next;
           });
-          
-          let nextFood;
+
+          let nextFood: { x: number; y: number };
           do {
             nextFood = {
               x: Math.floor(Math.random() * GRID_W),
-              y: Math.floor(Math.random() * GRID_H)
+              y: Math.floor(Math.random() * GRID_H),
             };
-          } while (newSnake.some((s) => s.x === nextFood.x && s.y === nextFood.y));
+          } while (
+            newSnake.some((s) => s.x === nextFood.x && s.y === nextFood.y)
+          );
           setFood(nextFood);
         } else {
           newSnake.pop();
@@ -168,7 +239,18 @@ export default function Terminal() {
     if (!isGaming) return;
 
     const handleGameKeys = (e: any) => {
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space", "q", "Q", "Enter"].includes(e.key)) {
+      if (
+        [
+          "ArrowUp",
+          "ArrowDown",
+          "ArrowLeft",
+          "ArrowRight",
+          "Space",
+          "q",
+          "Q",
+          "Enter",
+        ].includes(e.key)
+      ) {
         e.preventDefault();
       }
 
@@ -181,8 +263,8 @@ export default function Terminal() {
             command: "snake",
             output: `Session term-snake closed. Final score: ${gameScore}. Highest record: ${gameHighScore}.`,
             timestamp: new Date(),
-            dir: currentDir
-          }
+            dir: currentDir,
+          },
         ]);
         return;
       }
@@ -192,7 +274,7 @@ export default function Terminal() {
           setSnake([
             { x: 10, y: 5 },
             { x: 9, y: 5 },
-            { x: 8, y: 5 }
+            { x: 8, y: 5 },
           ]);
           setDirection("RIGHT");
           setFood({ x: 15, y: 5 });
@@ -270,7 +352,9 @@ export default function Terminal() {
     (window as any).toggleMatrix = () => {
       setMatrixActive((prev) => {
         const next = !prev;
-        printSystemMessage(next ? "Matrix background: ON" : "Matrix background: OFF");
+        printSystemMessage(
+          next ? "Matrix background: ON" : "Matrix background: OFF",
+        );
         return next;
       });
     };
@@ -345,14 +429,22 @@ Website:  ${resumeData.personal.website}
 ${resumeData.personal.bio}
 
 --- PROFESSIONAL EXPERIENCE ---
-${resumeData.experience.map(exp => `
+${resumeData.experience
+  .map(
+    (exp) => `
 * ${exp.role} | ${exp.company} (${exp.period})
-${exp.highlights.map(h => `  - ${h}`).join("\n")}`).join("\n")}
+${exp.highlights.map((h) => `  - ${h}`).join("\n")}`,
+  )
+  .join("\n")}
 
 --- TECHNICAL SKILLS ---
-${Object.entries(resumeData.skills).map(([category, list]) => `
+${Object.entries(resumeData.skills)
+  .map(
+    ([category, list]) => `
 [${category}]
-${list.map(s => ` - ${s.name}: ${s.level}%`).join("\n")}`).join("\n")}
+${list.map((s) => ` - ${s.name}: ${s.level}%`).join("\n")}`,
+  )
+  .join("\n")}
 `,
       "contact.txt": `Contact details for Ashwani Kumar:
 ---------------------------------------------------------
@@ -365,21 +457,27 @@ Type "hireme" for custom booking details and downloadable materials!
 `,
       "skills.txt": `Technical Proficiencies & Competency Index:
 ---------------------------------------------------------
-${Object.entries(resumeData.skills).map(([category, list]) => `
+${Object.entries(resumeData.skills)
+  .map(
+    ([category, list]) => `
 [${category}]
-${list.map(s => {
-  const barsCount = Math.round(s.level / 10);
-  const bars = "█".repeat(barsCount) + "░".repeat(10 - barsCount);
-  return `  ${s.name.padEnd(26)} ${bars} ${s.level}%`;
-}).join("\n")}`).join("\n")}
+${list
+  .map((s) => {
+    const barsCount = Math.round(s.level / 10);
+    const bars = "█".repeat(barsCount) + "░".repeat(10 - barsCount);
+    return `  ${s.name.padEnd(26)} ${bars} ${s.level}%`;
+  })
+  .join("\n")}`,
+  )
+  .join("\n")}
 `,
-      "projects": {},
-      "blog": {}
-    }
+      projects: {},
+      blog: {},
+    },
   };
 
   const projectDiagrams: Record<string, string> = {
-    "motomate": `
+    motomate: `
 [System Architecture Flow]
 
    +------------------+         WebSocket Stream         +---------------------+
@@ -424,7 +522,7 @@ ${list.map(s => {
    | SQLite Fast Ledger     | <========================== | Redis Slide-Window  |
    | (Local Event Audits)   |                             | Node.js Worker Pool |
    +------------------------+                             +---------------------+`,
-    "pricing": `
+    pricing: `
 [System Architecture Flow]
 
    +------------------------+       Coordinate Ping       +---------------------+
@@ -462,12 +560,13 @@ ${list.map(s => {
    +------------------------+       Aggregate Stats       +---------------------+
    | MongoDB DB             | <========================== | HuggingFace NLP API |
    | (Unstructured Peers)   |     (De-identified logs)    | Recharts Graphics   |
-   +------------------------+                             +---------------------+`
+   +------------------------+                             +---------------------+`,
   };
 
   // Hydrate projects directory
   resumeData.projects.forEach((p) => {
-    vfs["/"]["projects"][`${p.id}.txt`] = `=========================================================
+    vfs["/"]["projects"][`${p.id}.txt`] =
+      `=========================================================
 PROJECT: ${p.name.toUpperCase()}
 =========================================================
 Description:  ${p.description}
@@ -485,7 +584,8 @@ ${projectDiagrams[p.id] || ""}
 
   // Hydrate blog directory
   resumeData.articles.forEach((a) => {
-    vfs["/"]["blog"][`${a.slug}.txt`] = `=========================================================
+    vfs["/"]["blog"][`${a.slug}.txt`] =
+      `=========================================================
 ARTICLE: ${a.title}
 Published: ${a.date}
 =========================================================
@@ -502,8 +602,8 @@ ${a.content}
         command: "sys",
         output: text,
         timestamp: new Date(),
-        dir: currentDir
-      }
+        dir: currentDir,
+      },
     ]);
   };
 
@@ -528,8 +628,8 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
 -----------------------------------------------------------------------------
 `,
         timestamp: new Date(),
-        dir: "/"
-      }
+        dir: "/",
+      },
     ]);
   };
 
@@ -639,7 +739,9 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
       }
       // Project autocomplete
       else if (cmd === "project") {
-        const matches = resumeData.projects.map(p => p.id).filter((pId) => pId.startsWith(arg));
+        const matches = resumeData.projects
+          .map((p) => p.id)
+          .filter((pId) => pId.startsWith(arg));
         if (matches.length === 1) {
           setCommandValue(`project ${matches[0]}`);
         } else if (matches.length > 1) {
@@ -651,7 +753,9 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
 
   const getFilesForDir = (): string[] => {
     if (currentDir === "/") {
-      return Object.keys(vfs["/"]).filter(k => typeof vfs["/"][k] === "string");
+      return Object.keys(vfs["/"]).filter(
+        (k) => typeof vfs["/"][k] === "string",
+      );
     } else if (currentDir === "/projects") {
       return Object.keys(vfs["/"]["projects"]);
     } else if (currentDir === "/blog") {
@@ -684,7 +788,9 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
         if (arg === "") {
           return files[0] || "";
         }
-        const match = files.find((f) => f.toLowerCase().startsWith(arg.toLowerCase()));
+        const match = files.find((f) =>
+          f.toLowerCase().startsWith(arg.toLowerCase()),
+        );
         if (match && match.toLowerCase() !== arg.toLowerCase()) {
           return match.slice(arg.length);
         }
@@ -693,7 +799,9 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
         if (arg === "") {
           return dirs[0] || "";
         }
-        const match = dirs.find((d) => d.toLowerCase().startsWith(arg.toLowerCase()));
+        const match = dirs.find((d) =>
+          d.toLowerCase().startsWith(arg.toLowerCase()),
+        );
         if (match && match.toLowerCase() !== arg.toLowerCase()) {
           return match.slice(arg.length);
         }
@@ -702,16 +810,20 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
         if (arg === "") {
           return matches[0] || "";
         }
-        const match = matches.find((t) => t.toLowerCase().startsWith(arg.toLowerCase()));
+        const match = matches.find((t) =>
+          t.toLowerCase().startsWith(arg.toLowerCase()),
+        );
         if (match && match.toLowerCase() !== arg.toLowerCase()) {
           return match.slice(arg.length);
         }
       } else if (cmd === "project") {
-        const matches = resumeData.projects.map(p => p.id);
+        const matches = resumeData.projects.map((p) => p.id);
         if (arg === "") {
           return matches[0] || "";
         }
-        const match = matches.find((pId) => pId.toLowerCase().startsWith(arg.toLowerCase()));
+        const match = matches.find((pId) =>
+          pId.toLowerCase().startsWith(arg.toLowerCase()),
+        );
         if (match && match.toLowerCase() !== arg.toLowerCase()) {
           return match.slice(arg.length);
         }
@@ -727,34 +839,51 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
 
     if (parts.length === 1) {
       if (cmd === "") return [];
-      return COMMANDS_LIST
-        .filter((c) => c.startsWith(cmd) && c !== cmd)
-        .slice(0, 5);
+      return COMMANDS_LIST.filter((c) => c.startsWith(cmd) && c !== cmd).slice(
+        0,
+        5,
+      );
     } else if (parts.length === 2) {
       const arg = parts[1];
       if (cmd === "cat") {
         const files = getFilesForDir();
         return files
-          .filter((f) => f.toLowerCase().startsWith(arg.toLowerCase()) && f.toLowerCase() !== arg.toLowerCase())
-          .map(f => `cat ${f}`)
+          .filter(
+            (f) =>
+              f.toLowerCase().startsWith(arg.toLowerCase()) &&
+              f.toLowerCase() !== arg.toLowerCase(),
+          )
+          .map((f) => `cat ${f}`)
           .slice(0, 5);
       } else if (cmd === "cd") {
         const dirs = getSubdirsForDir();
         return dirs
-          .filter((d) => d.toLowerCase().startsWith(arg.toLowerCase()) && d.toLowerCase() !== arg.toLowerCase())
-          .map(d => `cd ${d}`)
+          .filter(
+            (d) =>
+              d.toLowerCase().startsWith(arg.toLowerCase()) &&
+              d.toLowerCase() !== arg.toLowerCase(),
+          )
+          .map((d) => `cd ${d}`)
           .slice(0, 5);
       } else if (cmd === "theme") {
         const matches = Object.keys(THEMES);
         return matches
-          .filter((t) => t.toLowerCase().startsWith(arg.toLowerCase()) && t.toLowerCase() !== arg.toLowerCase())
-          .map(t => `theme ${t}`)
+          .filter(
+            (t) =>
+              t.toLowerCase().startsWith(arg.toLowerCase()) &&
+              t.toLowerCase() !== arg.toLowerCase(),
+          )
+          .map((t) => `theme ${t}`)
           .slice(0, 5);
       } else if (cmd === "project") {
-        const matches = resumeData.projects.map(p => p.id);
+        const matches = resumeData.projects.map((p) => p.id);
         return matches
-          .filter((pId) => pId.toLowerCase().startsWith(arg.toLowerCase()) && pId.toLowerCase() !== arg.toLowerCase())
-          .map(pId => `project ${pId}`)
+          .filter(
+            (pId) =>
+              pId.toLowerCase().startsWith(arg.toLowerCase()) &&
+              pId.toLowerCase() !== arg.toLowerCase(),
+          )
+          .map((pId) => `project ${pId}`)
           .slice(0, 5);
       }
     }
@@ -779,53 +908,167 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
     const args = parts.slice(1);
 
     // Normalize input to find conversational intents
-    const cleanInput = trimmed.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim();
+    const cleanInput = trimmed
+      .toLowerCase()
+      .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "")
+      .trim();
 
     const isGreeting = (str: string) => {
-      const greets = ["hi", "hello", "hey", "hellow", "hola", "greetings", "yo", "sup", "whatsup", "whats up"];
+      const greets = [
+        "hi",
+        "hello",
+        "hey",
+        "hellow",
+        "hola",
+        "greetings",
+        "yo",
+        "sup",
+        "whatsup",
+        "whats up",
+      ];
       return greets.includes(str);
     };
 
     const isHowAreYou = (str: string) => {
-      return str === "how are you" || str === "howareyou" || str === "how-are-you" || str === "how are u" || str === "how r u" || str === "how you doing";
+      return (
+        str === "how are you" ||
+        str === "howareyou" ||
+        str === "how-are-you" ||
+        str === "how are u" ||
+        str === "how r u" ||
+        str === "how you doing"
+      );
     };
 
     const isProjectsQuery = (str: string) => {
       const words = str.split(" ");
-      const hasProjects = words.includes("projects") || words.includes("project");
-      const hasAction = words.some(w => ["show", "list", "what", "tell", "view", "display", "get", "about", "see"].includes(w));
-      return (hasProjects && hasAction) || str === "show projects" || str === "list projects" || str === "all projects" || str === "tell me about projects" || str === "tell me about your projects";
+      const hasProjects =
+        words.includes("projects") || words.includes("project");
+      const hasAction = words.some((w) =>
+        [
+          "show",
+          "list",
+          "what",
+          "tell",
+          "view",
+          "display",
+          "get",
+          "about",
+          "see",
+        ].includes(w),
+      );
+      return (
+        (hasProjects && hasAction) ||
+        str === "show projects" ||
+        str === "list projects" ||
+        str === "all projects" ||
+        str === "tell me about projects" ||
+        str === "tell me about your projects"
+      );
     };
 
     const isSkillsQuery = (str: string) => {
       const words = str.split(" ");
-      const hasSkills = words.includes("skills") || words.includes("skill") || words.includes("stack") || words.includes("technologies") || words.includes("tech");
-      const hasAction = words.some(w => ["show", "list", "what", "tell", "view", "display", "get", "about", "your", "see"].includes(w));
-      return (hasSkills && hasAction) || str === "show skills" || str === "list skills" || str === "tech stack" || str === "skills list" || str === "tell me about your skills";
+      const hasSkills =
+        words.includes("skills") ||
+        words.includes("skill") ||
+        words.includes("stack") ||
+        words.includes("technologies") ||
+        words.includes("tech");
+      const hasAction = words.some((w) =>
+        [
+          "show",
+          "list",
+          "what",
+          "tell",
+          "view",
+          "display",
+          "get",
+          "about",
+          "your",
+          "see",
+        ].includes(w),
+      );
+      return (
+        (hasSkills && hasAction) ||
+        str === "show skills" ||
+        str === "list skills" ||
+        str === "tech stack" ||
+        str === "skills list" ||
+        str === "tell me about your skills"
+      );
     };
 
     const isExperienceQuery = (str: string) => {
       const words = str.split(" ");
-      const hasExperience = words.includes("experience") || words.includes("work") || words.includes("history") || words.includes("career") || words.includes("timeline") || words.includes("jobs") || words.includes("background");
-      const hasAction = words.some(w => ["show", "list", "what", "tell", "view", "display", "get", "about", "where", "worked", "see"].includes(w));
-      return (hasExperience && hasAction) || str === "show experience" || str === "list experience" || str === "where did you work" || str === "work history" || str === "tell me about your experience";
+      const hasExperience =
+        words.includes("experience") ||
+        words.includes("work") ||
+        words.includes("history") ||
+        words.includes("career") ||
+        words.includes("timeline") ||
+        words.includes("jobs") ||
+        words.includes("background");
+      const hasAction = words.some((w) =>
+        [
+          "show",
+          "list",
+          "what",
+          "tell",
+          "view",
+          "display",
+          "get",
+          "about",
+          "where",
+          "worked",
+          "see",
+        ].includes(w),
+      );
+      return (
+        (hasExperience && hasAction) ||
+        str === "show experience" ||
+        str === "list experience" ||
+        str === "where did you work" ||
+        str === "work history" ||
+        str === "tell me about your experience"
+      );
     };
 
     let resolvedCmd = cmd;
     let resolvedArgs = args;
 
     // Check matching sequence
-    const matchedProj = resumeData.projects.find(p => cleanInput.includes(p.id.toLowerCase()));
-    const matchedArt = resumeData.articles.find(a => cleanInput.includes(a.slug.toLowerCase()));
+    const matchedProj = resumeData.projects.find((p) =>
+      cleanInput.includes(p.id.toLowerCase()),
+    );
+    const matchedArt = resumeData.articles.find((a) =>
+      cleanInput.includes(a.slug.toLowerCase()),
+    );
 
     if (isGreeting(cleanInput)) {
       resolvedCmd = "greet";
     } else if (isHowAreYou(cleanInput)) {
       resolvedCmd = "howareyouquery";
-    } else if (matchedProj && (cleanInput.includes("show") || cleanInput.includes("tell") || cleanInput.includes("about") || cleanInput.includes("project") || cleanInput.includes("what is") || cleanInput.includes("view"))) {
+    } else if (
+      matchedProj &&
+      (cleanInput.includes("show") ||
+        cleanInput.includes("tell") ||
+        cleanInput.includes("about") ||
+        cleanInput.includes("project") ||
+        cleanInput.includes("what is") ||
+        cleanInput.includes("view"))
+    ) {
       resolvedCmd = "project";
       resolvedArgs = [matchedProj.id];
-    } else if (matchedArt && (cleanInput.includes("show") || cleanInput.includes("tell") || cleanInput.includes("about") || cleanInput.includes("article") || cleanInput.includes("read") || cleanInput.includes("blog"))) {
+    } else if (
+      matchedArt &&
+      (cleanInput.includes("show") ||
+        cleanInput.includes("tell") ||
+        cleanInput.includes("about") ||
+        cleanInput.includes("article") ||
+        cleanInput.includes("read") ||
+        cleanInput.includes("blog"))
+    ) {
       resolvedCmd = "article";
       resolvedArgs = [matchedArt.slug];
     } else if (isProjectsQuery(cleanInput)) {
@@ -996,27 +1239,36 @@ ${resumeData.personal.website}/ashwani_resume.pdf
           output = `=========================================================
                  CAREER ENGINEERING TIMELINE
 =========================================================
-${resumeData.experience.map(exp => `
+${resumeData.experience
+  .map(
+    (exp) => `
 [${exp.period}]
 Role:        ${exp.role}
 Enterprise:  ${exp.company}
 Achievements:
-${exp.highlights.map(h => `  - ${h}`).join("\n")}
----------------------------------------------------------`).join("\n")}`;
+${exp.highlights.map((h) => `  - ${h}`).join("\n")}
+---------------------------------------------------------`,
+  )
+  .join("\n")}`;
           break;
 
         case "projects":
           output = `Available Sandboxed Project Specs:
 ---------------------------------------------------------
-${resumeData.projects.map(p => `
+${resumeData.projects
+  .map(
+    (p) => `
 * ${p.id.padEnd(20)} - ${p.description}
-  (Type "project ${p.id}" for full technical breakdown)`).join("\n")}
+  (Type "project ${p.id}" for full technical breakdown)`,
+  )
+  .join("\n")}
 `;
           break;
 
         case "project":
           if (!args[0]) {
-            output = "Usage: project <project-name>\nExample: project motomate\n\nType 'projects' to list all project names.";
+            output =
+              "Usage: project <project-name>\nExample: project motomate\n\nType 'projects' to list all project names.";
           } else {
             const projId = args[0].toLowerCase();
             const projFile = `${projId}.txt`;
@@ -1032,15 +1284,20 @@ ${resumeData.projects.map(p => `
         case "articles":
           output = `Ashwani Kumar's Engineering Notebook (Technical Articles):
 -----------------------------------------------------------------------------
-${resumeData.articles.map(art => `
+${resumeData.articles
+  .map(
+    (art) => `
 * ${art.slug.padEnd(25)} - ${art.title} (${art.date})
-  (Type "article ${art.slug}" to render inline)`).join("\n")}
+  (Type "article ${art.slug}" to render inline)`,
+  )
+  .join("\n")}
 `;
           break;
 
         case "article":
           if (!args[0]) {
-            output = "Usage: article <slug>\nExample: article redis-event-bus\n\nType 'blog' to list all technical articles.";
+            output =
+              "Usage: article <slug>\nExample: article redis-event-bus\n\nType 'blog' to list all technical articles.";
           } else {
             const slug = args[0].toLowerCase();
             const artFile = `${slug}.txt`;
@@ -1144,11 +1401,15 @@ drwxr-xr-x    blog/
           } else if (currentDir === "/projects") {
             output = `Mode          Name
 ------------------------
-${Object.keys(vfs["/"]["projects"]).map(f => `-rw-r--r--    ${f}`).join("\n")}`;
+${Object.keys(vfs["/"]["projects"])
+  .map((f) => `-rw-r--r--    ${f}`)
+  .join("\n")}`;
           } else if (currentDir === "/blog") {
             output = `Mode          Name
 ------------------------
-${Object.keys(vfs["/"]["blog"]).map(f => `-rw-r--r--    ${f}`).join("\n")}`;
+${Object.keys(vfs["/"]["blog"])
+  .map((f) => `-rw-r--r--    ${f}`)
+  .join("\n")}`;
           }
           break;
 
@@ -1217,7 +1478,8 @@ ${Object.keys(vfs["/"]["blog"]).map(f => `-rw-r--r--    ${f}`).join("\n")}`;
             const data = await res.json();
             output = `[Humor Daemon Node]\n"${data.joke}"`;
           } catch {
-            output = "Failed to communicate with humor APIs. Please verify developer routes.";
+            output =
+              "Failed to communicate with humor APIs. Please verify developer routes.";
           }
           break;
 
@@ -1276,30 +1538,43 @@ Enjoy your virtual hot coffee ☕! Keep on hacking.`;
             const results: string[] = [];
 
             // Search projects
-            resumeData.projects.forEach(p => {
-              if (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query) || p.technologies.some(t => t.toLowerCase().includes(query))) {
+            resumeData.projects.forEach((p) => {
+              if (
+                p.name.toLowerCase().includes(query) ||
+                p.description.toLowerCase().includes(query) ||
+                p.technologies.some((t) => t.toLowerCase().includes(query))
+              ) {
                 results.push(`Project: ${p.name} -> Type 'project ${p.id}'`);
               }
             });
 
             // Search articles
-            resumeData.articles.forEach(a => {
-              if (a.title.toLowerCase().includes(query) || a.summary.toLowerCase().includes(query)) {
-                results.push(`Blog Post: ${a.title} -> Type 'article ${a.slug}'`);
+            resumeData.articles.forEach((a) => {
+              if (
+                a.title.toLowerCase().includes(query) ||
+                a.summary.toLowerCase().includes(query)
+              ) {
+                results.push(
+                  `Blog Post: ${a.title} -> Type 'article ${a.slug}'`,
+                );
               }
             });
 
             // Search skills
             Object.entries(resumeData.skills).forEach(([cat, list]) => {
-              list.forEach(s => {
+              list.forEach((s) => {
                 if (s.name.toLowerCase().includes(query)) {
-                  results.push(`Skill: ${s.name} (${cat}) - Level: ${s.level}%`);
+                  results.push(
+                    `Skill: ${s.name} (${cat}) - Level: ${s.level}%`,
+                  );
                 }
               });
             });
 
             if (results.length > 0) {
-              output = `Search results for '${query}':\n---------------------------------------------------------\n` + results.join("\n");
+              output =
+                `Search results for '${query}':\n---------------------------------------------------------\n` +
+                results.join("\n");
             } else {
               output = `No results found in portfolio VFS for query '${query}'. Try 'skills' or 'projects' to browse directly.`;
             }
@@ -1308,7 +1583,8 @@ Enjoy your virtual hot coffee ☕! Keep on hacking.`;
 
         case "ai":
           if (!args[0]) {
-            output = "Usage: ai <your question>\nExample: ai What is Ashwani's experience with Angular?";
+            output =
+              "Usage: ai <your question>\nExample: ai What is Ashwani's experience with Angular?";
           } else {
             const aiPrompt = args.join(" ");
             output = "AI Copilot: Connecting to Gemini Engine...\n";
@@ -1319,17 +1595,17 @@ Enjoy your virtual hot coffee ☕! Keep on hacking.`;
                 command: trimmed,
                 output,
                 timestamp: new Date(),
-                dir: currentDir
-              }
+                dir: currentDir,
+              },
             ]);
 
             try {
               const response = await fetch("/api/ai", {
                 method: "POST",
                 headers: {
-                  "Content-Type": "application/json"
+                  "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ prompt: aiPrompt, history: aiHistory })
+                body: JSON.stringify({ prompt: aiPrompt, history: aiHistory }),
               });
               const data = await response.json();
 
@@ -1337,21 +1613,23 @@ Enjoy your virtual hot coffee ☕! Keep on hacking.`;
               setAiHistory((prev) => [
                 ...prev,
                 { role: "user", content: aiPrompt },
-                { role: "model", content: data.response || data.error }
+                { role: "model", content: data.response || data.error },
               ]);
 
               // Update the latest item with real response
               setHistory((prev) => {
                 const updated = [...prev];
                 if (updated.length > 0) {
-                  updated[updated.length - 1].output = data.response || "AI returned an empty response.";
+                  updated[updated.length - 1].output =
+                    data.response || "AI returned an empty response.";
                 }
                 return updated;
               });
               setIsExecuting(false);
               return;
             } catch (err: any) {
-              output = "AI Copilot Error: Failed to contact central proxy node. Verify secrets config.";
+              output =
+                "AI Copilot Error: Failed to contact central proxy node. Verify secrets config.";
             }
           }
           break;
@@ -1400,7 +1678,7 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
           setSnake([
             { x: 10, y: 5 },
             { x: 9, y: 5 },
-            { x: 8, y: 5 }
+            { x: 8, y: 5 },
           ]);
           setDirection("RIGHT");
           setFood({ x: 15, y: 5 });
@@ -1433,8 +1711,8 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
         command: trimmed,
         output,
         timestamp: new Date(),
-        dir: currentDir
-      }
+        dir: currentDir,
+      },
     ]);
     setIsExecuting(false);
   };
@@ -1454,8 +1732,7 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
       <MatrixBackground active={matrixActive} />
 
       {/* Geometric Balance Outer Frame & Layout container */}
-      <div className="flex-1 flex flex-col border-[12px] border-[#1A1F29] overflow-hidden relative">
-        
+      <div className="flex-1 flex flex-col border-12 border-[#1A1F29] overflow-hidden relative">
         {/* Terminal Header Bar */}
         <div className="h-8 bg-[#1A1F29] flex items-center px-4 justify-between border-b border-[#0A0E14] select-none shrink-0 z-10">
           <div className="flex gap-2">
@@ -1467,13 +1744,14 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
             ashwani_kumar — zsh — 1024×768
           </div>
           <div className="w-12 text-right hidden sm:block">
-            <span className="text-[10px] text-[#707A8C] font-mono tracking-widest uppercase">G-BAL</span>
+            <span className="text-[10px] text-[#707A8C] font-mono tracking-widest uppercase">
+              G-BAL
+            </span>
           </div>
         </div>
 
         {/* Dynamic Multi-column Bento Grid Layout */}
         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative z-10">
-          
           {/* Left Main Terminal viewport */}
           <main
             ref={containerRef}
@@ -1509,8 +1787,13 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
                 </div>
 
                 <div className="flex justify-between w-full max-w-md md:max-w-lg text-xs font-mono text-[#B3B1AD] border-b border-[#1A1F29] pb-2 px-1">
-                  <span>SCORE: <b className="text-[#C2D94C]">{gameScore}</b></span>
-                  <span>HIGH RECORD: <b className="text-[#F29718]">{gameHighScore}</b></span>
+                  <span>
+                    SCORE: <b className="text-[#C2D94C]">{gameScore}</b>
+                  </span>
+                  <span>
+                    HIGH RECORD:{" "}
+                    <b className="text-[#F29718]">{gameHighScore}</b>
+                  </span>
                 </div>
 
                 <div className="relative">
@@ -1523,7 +1806,10 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
                         ★ System Crash ★
                       </p>
                       <p className="text-xs text-[#B3B1AD] mb-4">
-                        Buffer overflow! Final stack load: <span className="text-[#C2D94C] font-bold">{gameScore}</span>
+                        Buffer overflow! Final stack load:{" "}
+                        <span className="text-[#C2D94C] font-bold">
+                          {gameScore}
+                        </span>
                       </p>
                       <p className="text-[10px] text-[#707A8C] animate-pulse">
                         Press [ENTER] or [SPACE] to Reboot, or [Q] to Terminate
@@ -1533,8 +1819,12 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
                 </div>
 
                 <div className="text-center space-y-1 font-mono text-[10px] text-[#707A8C]">
-                  <div>CONTROLS: [▲, ▼, ◀, ▶] Navigate Segment | [Q] Quit Shell</div>
-                  <div className="opacity-60">High scores are persisted securely in local storage.</div>
+                  <div>
+                    CONTROLS: [▲, ▼, ◀, ▶] Navigate Segment | [Q] Quit Shell
+                  </div>
+                  <div className="opacity-60">
+                    High scores are persisted securely in local storage.
+                  </div>
                 </div>
               </div>
             ) : (
@@ -1545,7 +1835,9 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
                     {item.command !== "welcome" && item.command !== "sys" && (
                       <div className="flex items-start gap-1 select-none">
                         <span className="text-[#59C2FF] font-semibold">➜</span>
-                        <span className="text-[#73D0FF]">{item.dir !== "/" ? item.dir : "~"}</span>
+                        <span className="text-[#73D0FF]">
+                          {item.dir !== "/" ? item.dir : "~"}
+                        </span>
                         <span className="text-zinc-200">{item.command}</span>
                       </div>
                     )}
@@ -1556,41 +1848,52 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
                 ))}
 
                 {/* Suggestions bar */}
-                {!isExecuting && commandValue && (matchingSuggestions.length > 0 || ghostSuggestion) && (
-                  <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-[#707A8C] pb-2 animate-fade-in select-none">
-                    <span className="text-[10px] uppercase tracking-wider text-zinc-500">Suggestions:</span>
-                    {matchingSuggestions.map((suggestion) => (
-                      <button
-                        key={suggestion}
-                        type="button"
-                        onClick={() => {
-                          setCommandValue(suggestion);
-                          if (inputRef.current) {
-                            inputRef.current.focus();
-                          }
-                        }}
-                        className="px-2 py-0.5 rounded-md bg-[#1A1F29]/80 border border-[#1A1F29] hover:bg-[#1A1F29] hover:text-white transition-all text-[#B3B1AD] text-[11px]"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                    {ghostSuggestion && (
-                      <span className="text-[10px] text-zinc-500 italic ml-1">
-                        Press [Tab] or [➔] to complete
+                {!isExecuting &&
+                  commandValue &&
+                  (matchingSuggestions.length > 0 || ghostSuggestion) && (
+                    <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-[#707A8C] pb-2 animate-fade-in select-none">
+                      <span className="text-[10px] uppercase tracking-wider text-zinc-500">
+                        Suggestions:
                       </span>
-                    )}
-                  </div>
-                )}
+                      {matchingSuggestions.map((suggestion) => (
+                        <button
+                          key={suggestion}
+                          type="button"
+                          onClick={() => {
+                            setCommandValue(suggestion);
+                            if (inputRef.current) {
+                              inputRef.current.focus();
+                            }
+                          }}
+                          className="px-2 py-0.5 rounded-md bg-[#1A1F29]/80 border border-[#1A1F29] hover:bg-[#1A1F29] hover:text-white transition-all text-[#B3B1AD] text-[11px]"
+                        >
+                          {suggestion}
+                        </button>
+                      ))}
+                      {ghostSuggestion && (
+                        <span className="text-[10px] text-zinc-500 italic ml-1">
+                          Press [Tab] or [➔] to complete
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                 {/* Input line */}
                 {!isExecuting && (
-                  <form onSubmit={handleSubmit} className="flex items-center gap-1 select-none pb-12">
+                  <form
+                    onSubmit={handleSubmit}
+                    className="flex items-center gap-1 select-none pb-12"
+                  >
                     <span className="text-[#F29718] font-semibold">➜</span>
-                    <span className="text-[#73D0FF] font-semibold">{currentDir !== "/" ? currentDir : "~"}</span>
+                    <span className="text-[#73D0FF] font-semibold">
+                      {currentDir !== "/" ? currentDir : "~"}
+                    </span>
                     <div className="relative flex-1 flex items-center ml-1">
                       {ghostSuggestion && (
                         <div className="absolute inset-y-0 left-0 right-0 flex items-center pointer-events-none whitespace-pre font-mono text-zinc-100 opacity-30 select-none">
-                          <span className="text-transparent">{commandValue}</span>
+                          <span className="text-transparent">
+                            {commandValue}
+                          </span>
                           <span>{ghostSuggestion}</span>
                         </div>
                       )}
@@ -1608,7 +1911,9 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
                         spellCheck="false"
                       />
                       {commandValue === "" && (
-                        <span className={`w-2 h-4 animate-pulse ${theme.caret}`} />
+                        <span
+                          className={`w-2 h-4 animate-pulse ${theme.caret}`}
+                        />
                       )}
                     </div>
                   </form>
@@ -1629,7 +1934,9 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
             <div className="space-y-8">
               {/* System gauges */}
               <div>
-                <h3 className="text-xs font-bold text-[#707A8C] uppercase tracking-widest mb-4">System Status</h3>
+                <h3 className="text-xs font-bold text-[#707A8C] uppercase tracking-widest mb-4">
+                  System Status
+                </h3>
                 <div className="space-y-4 font-mono text-xs">
                   <div>
                     <div className="flex justify-between mb-1">
@@ -1637,8 +1944,8 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
                       <span className="text-[#C2D94C]">{cpu}%</span>
                     </div>
                     <div className="h-1 bg-[#1A1F29] w-full rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-[#C2D94C] transition-all duration-1000" 
+                      <div
+                        className="h-full bg-[#C2D94C] transition-all duration-1000"
                         style={{ width: `${cpu}%` }}
                       />
                     </div>
@@ -1649,8 +1956,8 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
                       <span className="text-[#F29718]">{mem}GB / 16GB</span>
                     </div>
                     <div className="h-1 bg-[#1A1F29] w-full rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-[#F29718] transition-all duration-1000" 
+                      <div
+                        className="h-full bg-[#F29718] transition-all duration-1000"
                         style={{ width: `${(mem / 16) * 100}%` }}
                       />
                     </div>
@@ -1660,34 +1967,44 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
 
               {/* Quick Navigation Directories */}
               <div>
-                <h3 className="text-xs font-bold text-[#707A8C] uppercase tracking-widest mb-4">Directories</h3>
+                <h3 className="text-xs font-bold text-[#707A8C] uppercase tracking-widest mb-4">
+                  Directories
+                </h3>
                 <ul className="text-xs space-y-2.5 font-semibold">
-                  <li 
+                  <li
                     onClick={() => setCommandValue("cat about.txt")}
                     className="hover:text-white cursor-pointer flex items-center gap-2 group text-[#59C2FF]"
                   >
-                    <span className="text-[#F29718] group-hover:translate-x-1 transition-transform">➜</span>
+                    <span className="text-[#F29718] group-hover:translate-x-1 transition-transform">
+                      ➜
+                    </span>
                     <span>~/about.txt</span>
                   </li>
-                  <li 
+                  <li
                     onClick={() => setCommandValue("resume")}
                     className="hover:text-white cursor-pointer flex items-center gap-2 group text-[#59C2FF]"
                   >
-                    <span className="text-[#F29718] group-hover:translate-x-1 transition-transform">➜</span>
+                    <span className="text-[#F29718] group-hover:translate-x-1 transition-transform">
+                      ➜
+                    </span>
                     <span>~/resume.txt</span>
                   </li>
-                  <li 
+                  <li
                     onClick={() => setCommandValue("projects")}
                     className="hover:text-white cursor-pointer flex items-center gap-2 group text-[#59C2FF]"
                   >
-                    <span className="text-[#F29718] group-hover:translate-x-1 transition-transform">➜</span>
+                    <span className="text-[#F29718] group-hover:translate-x-1 transition-transform">
+                      ➜
+                    </span>
                     <span>~/projects/</span>
                   </li>
-                  <li 
+                  <li
                     onClick={() => setCommandValue("blog")}
                     className="hover:text-white cursor-pointer flex items-center gap-2 group text-[#59C2FF]"
                   >
-                    <span className="text-[#F29718] group-hover:translate-x-1 transition-transform">➜</span>
+                    <span className="text-[#F29718] group-hover:translate-x-1 transition-transform">
+                      ➜
+                    </span>
                     <span>~/blog/</span>
                   </li>
                 </ul>
@@ -1708,7 +2025,7 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
           <div className="flex gap-4">
             <div className="flex items-center gap-1 uppercase tracking-wide">
               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/>
+                <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z" />
               </svg>
               NORMAL
             </div>
@@ -1716,7 +2033,9 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
             <span>main*</span>
           </div>
           <div className="flex gap-4">
-            <span>LN: {history.length + 1}, COL: {commandValue.length + 1}</span>
+            <span>
+              LN: {history.length + 1}, COL: {commandValue.length + 1}
+            </span>
             <span>100%</span>
             <span>TOP</span>
           </div>
