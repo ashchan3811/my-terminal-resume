@@ -1,9 +1,17 @@
-import { useState, useEffect, useRef, FormEvent, KeyboardEvent } from "react";
+import { useState, useEffect, useRef, FormEvent, KeyboardEvent, useMemo } from "react";
 import { motion } from "motion/react";
 import { Terminal as TerminalIcon, Sparkles, Folder, FileText, CheckCircle2 } from "lucide-react";
 import { THEMES, Theme, HistoryItem, FileSystemNode } from "../types";
 import resumeData from "../data/resume.json";
 import MatrixBackground from "./MatrixBackground";
+
+const COMMANDS_LIST = [
+  "help", "about", "whoareyou", "resume", "projects", "project", "experience",
+  "skills", "stack", "opensource", "blog", "articles", "contact", "hireme", "hire",
+  "github", "linkedin", "website", "theme", "matrix", "clear", "history",
+  "pwd", "ls", "dir", "cd", "cat", "echo", "date", "time", "weather", "sudo",
+  "coffee", "joke", "exit", "ai", "search", "telemetry", "activity", "github-graph", "snake"
+];
 
 // Staggered boot sequence lines
 const BOOT_LINES = [
@@ -29,6 +37,25 @@ export default function Terminal() {
   const [crtActive, setCrtActive] = useState(true);
   const [aiHistory, setAiHistory] = useState<Array<{ role: string; content: string }>>([]);
   const [isExecuting, setIsExecuting] = useState(false);
+
+  // Retro Terminal Snake Game state
+  const [isGaming, setIsGaming] = useState(false);
+  const [snake, setSnake] = useState<Array<{ x: number; y: number }>>([
+    { x: 10, y: 5 },
+    { x: 9, y: 5 },
+    { x: 8, y: 5 }
+  ]);
+  const [direction, setDirection] = useState<"UP" | "DOWN" | "LEFT" | "RIGHT">("RIGHT");
+  const [food, setFood] = useState<{ x: number; y: number }>({ x: 15, y: 5 });
+  const [gameScore, setGameScore] = useState(0);
+  const [gameHighScore, setGameHighScore] = useState(() => {
+    try {
+      return parseInt(localStorage.getItem("terminal_snake_highscore") || "0", 10);
+    } catch {
+      return 0;
+    }
+  });
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const [cpu, setCpu] = useState(12);
   const [mem, setMem] = useState(4.2);
@@ -61,6 +88,170 @@ export default function Terminal() {
       clearInterval(uptimeInterval);
     };
   }, []);
+
+  // Snake Game Movement Tick
+  useEffect(() => {
+    if (!isGaming || isGameOver) return;
+
+    const moveSnake = () => {
+      setSnake((prevSnake) => {
+        if (!prevSnake || prevSnake.length === 0) return prevSnake;
+        const head = { ...prevSnake[0] };
+        switch (direction) {
+          case "UP":
+            head.y -= 1;
+            break;
+          case "DOWN":
+            head.y += 1;
+            break;
+          case "LEFT":
+            head.x -= 1;
+            break;
+          case "RIGHT":
+            head.x += 1;
+            break;
+        }
+
+        const GRID_W = 40;
+        const GRID_H = 18;
+        
+        // Wall or Segment collision check
+        if (
+          head.x < 0 ||
+          head.x >= GRID_W ||
+          head.y < 0 ||
+          head.y >= GRID_H ||
+          prevSnake.some((segment) => segment.x === head.x && segment.y === head.y)
+        ) {
+          setIsGameOver(true);
+          return prevSnake;
+        }
+
+        const newSnake = [head, ...prevSnake];
+
+        // Eat food check
+        if (head.x === food.x && head.y === food.y) {
+          setGameScore((s) => {
+            const next = s + 10;
+            if (next > gameHighScore) {
+              setGameHighScore(next);
+              try {
+                localStorage.setItem("terminal_snake_highscore", next.toString());
+              } catch {}
+            }
+            return next;
+          });
+          
+          let nextFood;
+          do {
+            nextFood = {
+              x: Math.floor(Math.random() * GRID_W),
+              y: Math.floor(Math.random() * GRID_H)
+            };
+          } while (newSnake.some((s) => s.x === nextFood.x && s.y === nextFood.y));
+          setFood(nextFood);
+        } else {
+          newSnake.pop();
+        }
+
+        return newSnake;
+      });
+    };
+
+    const intervalId = setInterval(moveSnake, 120);
+    return () => clearInterval(intervalId);
+  }, [isGaming, direction, food, isGameOver, gameHighScore]);
+
+  // Snake Game Keystroke Controller
+  useEffect(() => {
+    if (!isGaming) return;
+
+    const handleGameKeys = (e: any) => {
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space", "q", "Q", "Enter"].includes(e.key)) {
+        e.preventDefault();
+      }
+
+      if (e.key === "q" || e.key === "Q") {
+        setIsGaming(false);
+        setHistory((prev) => [
+          ...prev,
+          {
+            id: Math.random().toString(),
+            command: "snake",
+            output: `Session term-snake closed. Final score: ${gameScore}. Highest record: ${gameHighScore}.`,
+            timestamp: new Date(),
+            dir: currentDir
+          }
+        ]);
+        return;
+      }
+
+      if (isGameOver) {
+        if (e.key === "Enter" || e.key === " ") {
+          setSnake([
+            { x: 10, y: 5 },
+            { x: 9, y: 5 },
+            { x: 8, y: 5 }
+          ]);
+          setDirection("RIGHT");
+          setFood({ x: 15, y: 5 });
+          setGameScore(0);
+          setIsGameOver(false);
+        }
+        return;
+      }
+
+      switch (e.key) {
+        case "ArrowUp":
+          if (direction !== "DOWN") setDirection("UP");
+          break;
+        case "ArrowDown":
+          if (direction !== "UP") setDirection("DOWN");
+          break;
+        case "ArrowLeft":
+          if (direction !== "RIGHT") setDirection("LEFT");
+          break;
+        case "ArrowRight":
+          if (direction !== "LEFT") setDirection("RIGHT");
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleGameKeys);
+    return () => window.removeEventListener("keydown", handleGameKeys);
+  }, [isGaming, direction, isGameOver, gameScore, gameHighScore, currentDir]);
+
+  // ASCII Game Board Generator
+  const renderGameBoard = () => {
+    const GRID_W = 40;
+    const GRID_H = 18;
+    let boardStr = "";
+
+    boardStr += "┌" + "─".repeat(GRID_W) + "┐\n";
+
+    for (let y = 0; y < GRID_H; y++) {
+      boardStr += "│";
+      for (let x = 0; x < GRID_W; x++) {
+        const isHead = snake[0] && snake[0].x === x && snake[0].y === y;
+        const isBody = snake.slice(1).some((s) => s.x === x && s.y === y);
+        const isFood = food.x === x && food.y === y;
+
+        if (isHead) {
+          boardStr += "▲";
+        } else if (isBody) {
+          boardStr += "█";
+        } else if (isFood) {
+          boardStr += "★";
+        } else {
+          boardStr += " ";
+        }
+      }
+      boardStr += "│\n";
+    }
+
+    boardStr += "└" + "─".repeat(GRID_W) + "┘\n";
+    return boardStr;
+  };
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -186,6 +377,93 @@ ${list.map(s => {
     }
   };
 
+  const projectDiagrams: Record<string, string> = {
+    "motomate": `
+[System Architecture Flow]
+
+   +------------------+         WebSocket Stream         +---------------------+
+   | Mobile / Web App | ===============================> |  Express Gateway    |
+   +------------------+ (GPS coordinates & request payloads) +---------------------+
+            |                                                       |
+            | HTTP Actions                                          | PubSub & Locks
+            v                                                       v
+   +------------------+                                  +---------------------+
+   | Next.js Frontend | -------------------------------> | Redis Dispatcher    |
+   +------------------+                                  | (Lua Atomic Checks) |
+            |                                            +---------------------+
+            | Persistence queries                                   |
+            v                                                       v
+   +------------------+                                  +---------------------+
+   | PostgreSQL DB    | <================================| Geohash Allocation  |
+   | (Primary Storage)|                                  +---------------------+
+   +------------------+`,
+    "risk-system": `
+[System Architecture Flow]
+
+   +------------------------+      High-volume ingest     +---------------------+
+   | Financial Ledger Feed  | ==========================> |  Apache Kafka Bus   |
+   +------------------------+                             +---------------------+
+                                                                     |
+                                                                     | Stream Partitioning
+                                                                     v
+   +------------------------+                             +---------------------+
+   | Compound Indexes       | <========================== | NestJS Validator    |
+   | PostgreSQL Storage     |   (Optimized bulk insert)   | (Score < 20ms Check)|
+   +------------------------+                             +---------------------+`,
+    "telegram-bot": `
+[System Architecture Flow]
+
+   +------------------------+        HTTP Webhook         +---------------------+
+   | Telegram Channel Users | ==========================> | Telegraf API Port   |
+   +------------------------+                             +---------------------+
+                                                                     |
+                                                                     | Priority Queue
+                                                                     v
+   +------------------------+      Web3 JSON-RPC          +---------------------+
+   | SQLite Fast Ledger     | <========================== | Redis Slide-Window  |
+   | (Local Event Audits)   |                             | Node.js Worker Pool |
+   +------------------------+                             +---------------------+`,
+    "pricing": `
+[System Architecture Flow]
+
+   +------------------------+       Coordinate Ping       +---------------------+
+   | Rider / Driver Clients | ==========================> | FastAPI CalEngine   |
+   +------------------------+                             +---------------------+
+                                                                     |
+                                                                     | Hex Grouping
+                                                                     v
+   +------------------------+       O(1) Adjacency        +---------------------+
+   | React Grid Dashboard   | <========================== | Uber H3 Polygon     |
+   | (Live Surge Visuals)   |                             | Redis Memory Grid   |
+   +------------------------+                             +---------------------+`,
+    "law-practice": `
+[System Architecture Flow]
+   
+   +------------------------+       Direct Upload         +---------------------+
+   | In-Browser Document UI | ==========================> | AWS S3 Bucket Vault |
+   +------------------------+ (Secure Presigned Uploads)  +---------------------+
+               |                                                     |
+               | RLS Secure Query                                    | Auth Hook
+               v                                                     v
+   +------------------------+                             +---------------------+
+   | PostgreSQL Storage     | <========================== | Express App Server  |
+   | (Row-Level Security)   |                             | Stripe Billing GW   |
+   +------------------------+                             +---------------------+`,
+    "engagement-review": `
+[System Architecture Flow]
+
+   +------------------------+       PEER Reviews          +---------------------+
+   | Client Feedback Forms  | ==========================> | Node.js Backend API |
+   +------------------------+                             +---------------------+
+                                                                     |
+                                                                     | k-Anonymity Hashing
+                                                                     v
+   +------------------------+       Aggregate Stats       +---------------------+
+   | MongoDB DB             | <========================== | HuggingFace NLP API |
+   | (Unstructured Peers)   |     (De-identified logs)    | Recharts Graphics   |
+   +------------------------+                             +---------------------+`
+  };
+
   // Hydrate projects directory
   resumeData.projects.forEach((p) => {
     vfs["/"]["projects"][`${p.id}.txt`] = `=========================================================
@@ -200,6 +478,7 @@ ${p.challenges}
 
 [Key Learnings]
 ${p.learnings}
+${projectDiagrams[p.id] || ""}
 `;
   });
 
@@ -294,7 +573,20 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
     // Tab autocomplete
     if (e.key === "Tab") {
       e.preventDefault();
-      handleAutocomplete();
+      if (ghostSuggestion) {
+        setCommandValue((prev) => prev + ghostSuggestion);
+      } else {
+        handleAutocomplete();
+      }
+    }
+
+    // ArrowRight to apply ghost suggestion if cursor is at the end
+    if (e.key === "ArrowRight") {
+      const isAtEnd = e.currentTarget.selectionStart === commandValue.length;
+      if (isAtEnd && ghostSuggestion) {
+        e.preventDefault();
+        setCommandValue((prev) => prev + ghostSuggestion);
+      }
     }
   };
 
@@ -306,17 +598,8 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
     const parts = val.split(" ");
     const cmd = parts[0];
 
-    // Simple single-level commands autocomplete
-    const commandsList = [
-      "help", "about", "whoareyou", "resume", "projects", "project", "experience",
-      "skills", "stack", "opensource", "blog", "articles", "contact", "hireme",
-      "github", "linkedin", "website", "theme", "matrix", "clear", "history",
-      "pwd", "ls", "cd", "cat", "echo", "date", "time", "weather", "sudo",
-      "coffee", "joke", "exit", "ai", "search"
-    ];
-
     if (parts.length === 1) {
-      const matches = commandsList.filter((c) => c.startsWith(cmd));
+      const matches = COMMANDS_LIST.filter((c) => c.startsWith(cmd));
       if (matches.length === 1) {
         setCommandValue(matches[0]);
       } else if (matches.length > 1) {
@@ -383,6 +666,100 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
     return [".."];
   };
 
+  const ghostSuggestion = useMemo(() => {
+    if (!commandValue) return "";
+    const parts = commandValue.split(" ");
+    const cmd = parts[0].toLowerCase();
+
+    if (parts.length === 1) {
+      const match = COMMANDS_LIST.find((c) => c.startsWith(cmd));
+      if (match && match !== cmd) {
+        return match.slice(cmd.length);
+      }
+    } else if (parts.length === 2) {
+      const arg = parts[1];
+      if (cmd === "cat") {
+        const files = getFilesForDir();
+        if (arg === "") {
+          return files[0] || "";
+        }
+        const match = files.find((f) => f.toLowerCase().startsWith(arg.toLowerCase()));
+        if (match && match.toLowerCase() !== arg.toLowerCase()) {
+          return match.slice(arg.length);
+        }
+      } else if (cmd === "cd") {
+        const dirs = getSubdirsForDir();
+        if (arg === "") {
+          return dirs[0] || "";
+        }
+        const match = dirs.find((d) => d.toLowerCase().startsWith(arg.toLowerCase()));
+        if (match && match.toLowerCase() !== arg.toLowerCase()) {
+          return match.slice(arg.length);
+        }
+      } else if (cmd === "theme") {
+        const matches = Object.keys(THEMES);
+        if (arg === "") {
+          return matches[0] || "";
+        }
+        const match = matches.find((t) => t.toLowerCase().startsWith(arg.toLowerCase()));
+        if (match && match.toLowerCase() !== arg.toLowerCase()) {
+          return match.slice(arg.length);
+        }
+      } else if (cmd === "project") {
+        const matches = resumeData.projects.map(p => p.id);
+        if (arg === "") {
+          return matches[0] || "";
+        }
+        const match = matches.find((pId) => pId.toLowerCase().startsWith(arg.toLowerCase()));
+        if (match && match.toLowerCase() !== arg.toLowerCase()) {
+          return match.slice(arg.length);
+        }
+      }
+    }
+    return "";
+  }, [commandValue, currentDir]);
+
+  const matchingSuggestions = useMemo(() => {
+    if (!commandValue) return [];
+    const parts = commandValue.split(" ");
+    const cmd = parts[0].toLowerCase();
+
+    if (parts.length === 1) {
+      if (cmd === "") return [];
+      return COMMANDS_LIST
+        .filter((c) => c.startsWith(cmd) && c !== cmd)
+        .slice(0, 5);
+    } else if (parts.length === 2) {
+      const arg = parts[1];
+      if (cmd === "cat") {
+        const files = getFilesForDir();
+        return files
+          .filter((f) => f.toLowerCase().startsWith(arg.toLowerCase()) && f.toLowerCase() !== arg.toLowerCase())
+          .map(f => `cat ${f}`)
+          .slice(0, 5);
+      } else if (cmd === "cd") {
+        const dirs = getSubdirsForDir();
+        return dirs
+          .filter((d) => d.toLowerCase().startsWith(arg.toLowerCase()) && d.toLowerCase() !== arg.toLowerCase())
+          .map(d => `cd ${d}`)
+          .slice(0, 5);
+      } else if (cmd === "theme") {
+        const matches = Object.keys(THEMES);
+        return matches
+          .filter((t) => t.toLowerCase().startsWith(arg.toLowerCase()) && t.toLowerCase() !== arg.toLowerCase())
+          .map(t => `theme ${t}`)
+          .slice(0, 5);
+      } else if (cmd === "project") {
+        const matches = resumeData.projects.map(p => p.id);
+        return matches
+          .filter((pId) => pId.toLowerCase().startsWith(arg.toLowerCase()) && pId.toLowerCase() !== arg.toLowerCase())
+          .map(pId => `project ${pId}`)
+          .slice(0, 5);
+      }
+    }
+    return [];
+  }, [commandValue, currentDir]);
+
   // Submit terminal command
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -438,6 +815,8 @@ joke                  - Retrieves a random programming humor anecdote.
 sudo [action]         - Grants superuser sandbox accesses. (Try 'sudo hire ashwani').
 coffee                - Synthesizes a virtual cup of fresh coffee.
 search <query>        - Queries skills, experiences, and projects for matches.
+telemetry             - Live network stats, system metrics, and GitHub heatmaps!
+snake                 - Play the classic retro Snake mini-game in the terminal console!
 exit                  - Closes session back to standard welcome screen.
 ai <question>         - Ask anything to Ashwani's conversational Gemini AI Copilot!
 -----------------------------------------------------------------------------`;
@@ -883,6 +1262,59 @@ Enjoy your virtual hot coffee ☕! Keep on hacking.`;
           }
           break;
 
+        case "telemetry":
+        case "activity":
+        case "github-graph":
+          output = `=============================================================================
+                    ASHWANI'S RECON & SYSTEM TELEMETRY
+=============================================================================
+
+[+] Real-Time Security & Performance Metrics:
+  - Latency Vector:   ${Math.floor(Math.random() * 15) + 8}ms (TLSv1.3 Handshake OK)
+  - IP Address:       192.168.1.104
+  - Core Stack Load:  ${cpu}% CPU | ${mem}GB/16GB VRAM Allocation
+  - Socket Status:    1 active multiplexed websocket connection
+  - API Gateway:      FastAPI / Express Node Cluster [ONLINE]
+  - DB Buffers:       Redis cache hits: 98.4% | PG transaction pool: 0ms queue
+
+[+] Developer Activity & Contribution Heatmap (Last 24 Weeks):
+  
+  Sun  ░░▒▒▓▓████▓▓▒▒░░░░░░▒▒▒▒░░░░░░▒▒▒▒░░░░░░▒▒▒▒▓▓████
+  Mon  ▒▒░░░░▒▒▓▓██████▓▓▒▒░░▒▒▒▒░░░░▒▒▓▓██████▓▓▒▒░░▒▒▒▒
+  Tue  ▓▓▒▒░░░░▒▒▓▓████▓▓▒▒░░▒▒▓▓▒▒░░░░▒▒▓▓████▓▓▒▒░░▒▒▓▓
+  Wed  ██▓▓▒▒░░░░▒▒▓▓██▓▓▒▒░░░░██▓▓▒▒░░░░▒▒▓▓██▓▓▒▒░░░░██
+  Thu  ▓▓██▓▓▒▒░░░░▒▒▓▓▒▒░░░░▒▒▓▓██▓▓▒▒░░░░▒▒▓▓▒▒░░░░▒▒▓▓
+  Fri  ▒▒▓▓██▓▓▒▒░░░░░░▒▒▒▒▓▓▓▓▒▒▓▓██▓▓▒▒░░░░░░▒▒▒▒▓▓▓▓▒▒
+  Sat  ░░▒▒▓▓██▓▓▒▒▒▒▓▓▓▓██████░░▒▒▓▓██▓▓▒▒▒▒▓▓▓▓██████
+  
+  Legend:  ░ No Commits  ▒ 1-3 Commits  ▓ 4-6 Commits  █ 7+ Commits
+
+[+] Insights:
+  - Total Commits in current epoch: 1,482 Contributions
+  - Weekly Peak: Wednesdays (Event-driven Redis streams debugging sessions)
+  - Most modified module: /src/components/Terminal.tsx (Active iteration)
+
+-----------------------------------------------------------------------------
+Type "projects" to explore source codes, or "snake" to play terminal games.
+`;
+          break;
+
+        case "snake":
+        case "game":
+        case "play":
+          setIsGaming(true);
+          setSnake([
+            { x: 10, y: 5 },
+            { x: 9, y: 5 },
+            { x: 8, y: 5 }
+          ]);
+          setDirection("RIGHT");
+          setFood({ x: 15, y: 5 });
+          setGameScore(0);
+          setIsGameOver(false);
+          setIsExecuting(false);
+          return;
+
         case "exit":
           output = "Resetting shell. Clearing local session buffer...";
           setHistory([]);
@@ -971,6 +1403,46 @@ Enjoy your virtual hot coffee ☕! Keep on hacking.`;
                   </button>
                 </div>
               </div>
+            ) : isGaming ? (
+              <div className="flex-1 flex flex-col items-center justify-center space-y-6 select-none py-8 animate-fade-in w-full max-w-2xl md:max-w-3xl mx-auto">
+                <div className="text-center space-y-2">
+                  <h2 className="text-sm font-bold tracking-widest text-[#F29718] uppercase">
+                    👾 Retro Terminal Arcade 👾
+                  </h2>
+                  <p className="text-xs text-[#707A8C]">
+                    Defeat the matrix! Command the system memory buffer stack.
+                  </p>
+                </div>
+
+                <div className="flex justify-between w-full max-w-md md:max-w-lg text-xs font-mono text-[#B3B1AD] border-b border-[#1A1F29] pb-2 px-1">
+                  <span>SCORE: <b className="text-[#C2D94C]">{gameScore}</b></span>
+                  <span>HIGH RECORD: <b className="text-[#F29718]">{gameHighScore}</b></span>
+                </div>
+
+                <div className="relative">
+                  <pre className="font-mono text-xs sm:text-sm md:text-base lg:text-lg leading-none bg-black/60 p-5 rounded-xl border border-[#1A1F29] text-[#F29718] shadow-2xl tracking-widest select-none">
+                    {renderGameBoard()}
+                  </pre>
+                  {isGameOver && (
+                    <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center text-center p-4 rounded-lg border border-red-500/50">
+                      <p className="text-[#FF5F56] text-lg font-bold tracking-wider animate-pulse uppercase mb-2">
+                        ★ System Crash ★
+                      </p>
+                      <p className="text-xs text-[#B3B1AD] mb-4">
+                        Buffer overflow! Final stack load: <span className="text-[#C2D94C] font-bold">{gameScore}</span>
+                      </p>
+                      <p className="text-[10px] text-[#707A8C] animate-pulse">
+                        Press [ENTER] or [SPACE] to Reboot, or [Q] to Terminate
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="text-center space-y-1 font-mono text-[10px] text-[#707A8C]">
+                  <div>CONTROLS: [▲, ▼, ◀, ▶] Navigate Segment | [Q] Quit Shell</div>
+                  <div className="opacity-60">High scores are persisted securely in local storage.</div>
+                </div>
+              </div>
             ) : (
               <div className="space-y-4">
                 {/* Command logs */}
@@ -989,19 +1461,52 @@ Enjoy your virtual hot coffee ☕! Keep on hacking.`;
                   </div>
                 ))}
 
+                {/* Suggestions bar */}
+                {!isExecuting && commandValue && (matchingSuggestions.length > 0 || ghostSuggestion) && (
+                  <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-[#707A8C] pb-2 animate-fade-in select-none">
+                    <span className="text-[10px] uppercase tracking-wider text-zinc-500">Suggestions:</span>
+                    {matchingSuggestions.map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => {
+                          setCommandValue(suggestion);
+                          if (inputRef.current) {
+                            inputRef.current.focus();
+                          }
+                        }}
+                        className="px-2 py-0.5 rounded-md bg-[#1A1F29]/80 border border-[#1A1F29] hover:bg-[#1A1F29] hover:text-white transition-all text-[#B3B1AD] text-[11px]"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                    {ghostSuggestion && (
+                      <span className="text-[10px] text-zinc-500 italic ml-1">
+                        Press [Tab] or [➔] to complete
+                      </span>
+                    )}
+                  </div>
+                )}
+
                 {/* Input line */}
                 {!isExecuting && (
                   <form onSubmit={handleSubmit} className="flex items-center gap-1 select-none pb-12">
                     <span className="text-[#F29718] font-semibold">➜</span>
                     <span className="text-[#73D0FF] font-semibold">{currentDir !== "/" ? currentDir : "~"}</span>
                     <div className="relative flex-1 flex items-center ml-1">
+                      {ghostSuggestion && (
+                        <div className="absolute inset-y-0 left-0 right-0 flex items-center pointer-events-none whitespace-pre font-mono text-zinc-100 opacity-30 select-none">
+                          <span className="text-transparent">{commandValue}</span>
+                          <span>{ghostSuggestion}</span>
+                        </div>
+                      )}
                       <input
                         ref={inputRef}
                         type="text"
                         value={commandValue}
                         onChange={(e) => setCommandValue(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        className="w-full bg-transparent outline-none border-none p-0 focus:ring-0 text-zinc-100"
+                        className="w-full bg-transparent outline-none border-none p-0 focus:ring-0 text-zinc-100 font-mono text-sm leading-none relative z-10"
                         autoFocus
                         autoComplete="off"
                         autoCorrect="off"
