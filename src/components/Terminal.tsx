@@ -35,6 +35,7 @@ const COMMANDS_LIST = [
   "contact",
   "hireme",
   "hire",
+  "availability",
   "github",
   "linkedin",
   "website",
@@ -455,6 +456,24 @@ GitHub:    ${resumeData.personal.github}
 Portfolio: ${resumeData.personal.website}
 
 Type "hireme" for custom booking details and downloadable materials!
+`,
+      "availability.txt": `=========================================================
+                BOOKING PORTAL & AVAILABILITY
+=========================================================
+Ashwani is currently open to remote consulting contracts and team contributions!
+
+Current Booking Details:
+✦ Availability:        ${resumeData.availability.status}
+✦ Work Commitment:     ${resumeData.availability.hours}
+✦ Contract Rate:       ${resumeData.availability.rate}
+✦ Project Preference:  ${resumeData.availability.preferences}
+✦ Team Engagement:     ${resumeData.availability.setup}
+
+Hiring Actions:
+1. Schedule direct sync:  Email ${resumeData.personal.email}
+2. Explore GitHub code:   Type "github"
+3. Connect on LinkedIn:   Type "linkedin"
+4. Download Resume PDF:   Type "resume download"
 `,
       "skills.txt": `=========================================================
                       BEST SKILLS & STRENGTHS
@@ -1096,6 +1115,15 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
       resolvedCmd = "skills";
     } else if (isExperienceQuery(cleanInput)) {
       resolvedCmd = "experience";
+    } else if (
+      cleanInput.includes("available") ||
+      cleanInput.includes("availability") ||
+      cleanInput.includes("rate") ||
+      cleanInput.includes("hours") ||
+      cleanInput.includes("hire") ||
+      cleanInput.includes("booking")
+    ) {
+      resolvedCmd = "availability";
     }
 
     setIsExecuting(true);
@@ -1153,6 +1181,7 @@ blog                  - Lists technical blog articles.
 article <slug>        - Renders full blog article (e.g., 'article redis-event-bus').
 contact               - Displays email, LinkedIn, and social references.
 hireme                - Displays contract info & credentials download.
+availability          - Displays Ashwani's contract terms, rate & availability.
 github                - Opens Ashwani's GitHub.
 linkedin              - Opens Ashwani's LinkedIn.
 website               - Opens portfolio link.
@@ -1377,24 +1406,8 @@ ${resumeData.articles
 
         case "hire":
         case "hireme":
-          output = `=========================================================
-                BOOKING PORTAL & AVAILABILITY
-=========================================================
-Ashwani is currently open to remote consulting contracts and team contributions!
-
-Current Booking Details:
-✦ Availability:        ${resumeData.availability.status}
-✦ Work Commitment:     ${resumeData.availability.hours}
-✦ Contract Rate:       ${resumeData.availability.rate}
-✦ Project Preference:  ${resumeData.availability.preferences}
-✦ Team Engagement:     ${resumeData.availability.setup}
-
-Hiring Actions:
-1. Schedule direct sync:  Email ${resumeData.personal.email}
-2. Explore GitHub code:   Type "github"
-3. Connect on LinkedIn:   Type "linkedin"
-4. Download Resume PDF:   Type "resume download"
-`;
+        case "availability":
+          output = vfs["/"]["availability.txt"];
           break;
 
         case "github":
