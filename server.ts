@@ -25,6 +25,58 @@ function getGeminiClient(): GoogleGenAI | null {
   return aiClient;
 }
 
+async function generateContentWithRetryAndFallback(client: any, params: {
+  contents: any[];
+  systemInstruction: string;
+}): Promise<string> {
+  const modelsToTry = ["gemini-3.5-flash", "gemini-3.1-flash-lite"];
+  let lastError: any = null;
+
+  for (const model of modelsToTry) {
+    let attempts = 3;
+    let delay = 500;
+
+    for (let attempt = 1; attempt <= attempts; attempt++) {
+      try {
+        console.log(`[AI Copilot] Requesting ${model} (Attempt ${attempt}/${attempts})...`);
+        const result = await client.models.generateContent({
+          model,
+          contents: params.contents,
+          config: {
+            systemInstruction: params.systemInstruction,
+            temperature: 0.7,
+          },
+        });
+
+        if (result.text) {
+          return result.text;
+        }
+      } catch (err: any) {
+        lastError = err;
+        console.warn(`[AI Copilot] Error on ${model} (Attempt ${attempt}):`, err.message || err);
+
+        const errMsg = String(err.message || err);
+        const isTransient = errMsg.includes("503") || 
+                            errMsg.includes("UNAVAILABLE") || 
+                            errMsg.includes("429") || 
+                            errMsg.includes("RESOURCE_EXHAUSTED") ||
+                            errMsg.includes("high demand") ||
+                            err.status === 503 ||
+                            err.status === 429;
+
+        if (!isTransient || attempt === attempts) {
+          break;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        delay *= 2;
+      }
+    }
+  }
+
+  throw lastError || new Error("Failed to generate content after trying multiple models.");
+}
+
 // Programmer jokes list for the `joke` command
 const JOKES = [
   "There are 10 types of people in the world: those who understand binary, and those who don't.",
@@ -153,16 +205,12 @@ Keep your responses concise, structured, and matching a terminal aesthetic (feel
         parts: [{ text: prompt }]
       });
 
-      const response = await client.models.generateContent({
-        model: "gemini-3.5-flash",
+      const text = await generateContentWithRetryAndFallback(client, {
         contents,
-        config: {
-          systemInstruction,
-          temperature: 0.7,
-        },
+        systemInstruction,
       });
 
-      res.json({ response: response.text || "I was unable to formulate a response." });
+      res.json({ response: text || "I was unable to formulate a response." });
     } catch (error: any) {
       console.error("Gemini API Error:", error);
       res.status(500).json({ error: "Failed to communicate with AI Copilot.", details: error.message });

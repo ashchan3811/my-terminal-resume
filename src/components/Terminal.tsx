@@ -67,6 +67,17 @@ const COMMANDS_LIST = [
   "howareyou",
 ];
 
+const VALID_SWITCH_COMMANDS = new Set([
+  "hi", "hello", "hellow", "hey", "hola", "greetings", "yo", "greet",
+  "howareyou", "how-are-you", "howareyouquery", "help", "clear", "about",
+  "whoareyou", "resume", "skills", "stack", "experience", "timeline",
+  "projects", "project", "blog", "articles", "article", "contact",
+  "hire", "hireme", "availability", "github", "linkedin", "website",
+  "theme", "matrix", "crt", "pwd", "dir", "ls", "cd", "cat", "echo",
+  "date", "time", "joke", "weather", "sudo", "coffee", "search", "ai",
+  "telemetry", "activity", "github-graph", "snake", "game", "play", "exit"
+]);
+
 // Staggered boot sequence lines
 const BOOT_LINES = [
   "Initializing Ashwani's Portfolio Shell [v2.1.0]...",
@@ -121,7 +132,21 @@ export default function Terminal() {
   const [cpu, setCpu] = useState(12);
   const [mem, setMem] = useState(4.2);
   const [uptime, setUptime] = useState("00:00:00");
+  const [terminalSize, setTerminalSize] = useState({ width: 1024, height: 768 });
+  const [isStatusExpanded, setIsStatusExpanded] = useState(false);
   const startTimeRef = useRef<number>(Date.now());
+
+  useEffect(() => {
+    const handleResize = () => {
+      setTerminalSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const metricsInterval = setInterval(() => {
@@ -1126,6 +1151,10 @@ This terminal interacts with a sandboxed file system of Ashwani's professional c
       resolvedCmd = "availability";
     }
 
+    if (!VALID_SWITCH_COMMANDS.has(resolvedCmd)) {
+      resolvedCmd = "ai_fallback";
+    }
+
     setIsExecuting(true);
     let output = "";
 
@@ -1660,11 +1689,12 @@ Enjoy your virtual hot coffee ☕! Keep on hacking.`;
           break;
 
         case "ai":
-          if (!args[0]) {
+        case "ai_fallback": {
+          const aiPrompt = resolvedCmd === "ai_fallback" ? trimmed : args.join(" ");
+          if (resolvedCmd === "ai" && !args[0]) {
             output =
               "Usage: ai <your question>\nExample: ai What is Ashwani's experience with Angular?";
           } else {
-            const aiPrompt = args.join(" ");
             output = "AI Copilot: Connecting to Gemini Engine...\n";
             setHistory((prev) => [
               ...prev,
@@ -1711,6 +1741,7 @@ Enjoy your virtual hot coffee ☕! Keep on hacking.`;
             }
           }
           break;
+        }
 
         case "telemetry":
         case "activity":
@@ -1819,7 +1850,7 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
             <span className="w-3 h-3 rounded-full bg-[#27C93F]" />
           </div>
           <div className="text-xs text-[#707A8C] font-semibold tracking-wider">
-            ashwani_kumar — zsh — 1024×768
+            ashwani_kumar — zsh — {terminalSize.width}×{terminalSize.height}
           </div>
           <div className="w-12 text-right hidden sm:block">
             <span className="text-[10px] text-[#707A8C] font-mono tracking-widest uppercase">
@@ -2008,14 +2039,23 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
           </main>
 
           {/* Right Status Panel Sidebar */}
-          <aside className="w-full md:w-64 border-t md:border-t-0 md:border-l border-[#1A1F29] p-6 flex flex-col justify-between select-none shrink-0 bg-black/30 backdrop-blur-xs text-[#B3B1AD]">
-            <div className="space-y-8">
+          <aside className="w-full md:w-64 border-t md:border-t-0 md:border-l border-[#1A1F29] p-4 md:p-6 flex flex-col justify-between select-none shrink-0 bg-black/30 backdrop-blur-xs text-[#B3B1AD] transition-all duration-300">
+            <div className="space-y-4 md:space-y-8">
               {/* System gauges */}
               <div>
-                <h3 className="text-xs font-bold text-[#707A8C] uppercase tracking-widest mb-4">
-                  System Status
-                </h3>
-                <div className="space-y-4 font-mono text-xs">
+                <div 
+                  onClick={() => setIsStatusExpanded(!isStatusExpanded)}
+                  className="flex items-center justify-between cursor-pointer md:cursor-default py-1 md:py-0 border-b border-[#1A1F29] pb-2 md:border-none md:pb-0"
+                >
+                  <h3 className="text-xs font-bold text-[#707A8C] uppercase tracking-widest">
+                    System Status
+                  </h3>
+                  <span className="text-[10px] text-[#F29718] font-bold md:hidden bg-[#1A1F29] px-2 py-0.5 rounded">
+                    {isStatusExpanded ? "COLLAPSE ▲" : "EXPAND STATUS & DIRECTORIES ▼"}
+                  </span>
+                </div>
+                
+                <div className={`mt-4 space-y-4 font-mono text-xs ${isStatusExpanded ? "block" : "hidden md:block"}`}>
                   <div>
                     <div className="flex justify-between mb-1">
                       <span>CPU</span>
@@ -2044,7 +2084,7 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
               </div>
 
               {/* Quick Navigation Directories */}
-              <div>
+              <div className={isStatusExpanded ? "block" : "hidden md:block"}>
                 <h3 className="text-xs font-bold text-[#707A8C] uppercase tracking-widest mb-4">
                   Directories
                 </h3>
@@ -2066,6 +2106,42 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
                       ➜
                     </span>
                     <span>~/resume.txt</span>
+                  </li>
+                  <li
+                    onClick={() => setCommandValue("skills")}
+                    className="hover:text-white cursor-pointer flex items-center gap-2 group text-[#59C2FF]"
+                  >
+                    <span className="text-[#F29718] group-hover:translate-x-1 transition-transform">
+                      ➜
+                    </span>
+                    <span>~/skills.txt</span>
+                  </li>
+                  <li
+                    onClick={() => setCommandValue("availability")}
+                    className="hover:text-white cursor-pointer flex items-center gap-2 group text-[#59C2FF]"
+                  >
+                    <span className="text-[#F29718] group-hover:translate-x-1 transition-transform">
+                      ➜
+                    </span>
+                    <span>~/availability.txt</span>
+                  </li>
+                  <li
+                    onClick={() => setCommandValue("contact")}
+                    className="hover:text-white cursor-pointer flex items-center gap-2 group text-[#59C2FF]"
+                  >
+                    <span className="text-[#F29718] group-hover:translate-x-1 transition-transform">
+                      ➜
+                    </span>
+                    <span>~/contact.txt</span>
+                  </li>
+                  <li
+                    onClick={() => setCommandValue("timeline")}
+                    className="hover:text-white cursor-pointer flex items-center gap-2 group text-[#59C2FF]"
+                  >
+                    <span className="text-[#F29718] group-hover:translate-x-1 transition-transform">
+                      ➜
+                    </span>
+                    <span>~/timeline/</span>
                   </li>
                   <li
                     onClick={() => setCommandValue("projects")}
@@ -2090,7 +2166,7 @@ Type "projects" to explore source codes, or "snake" to play terminal games.
             </div>
 
             {/* Static & Ticker Metadata block */}
-            <div className="text-[10px] text-[#707A8C] border-t border-[#1A1F29] pt-4 space-y-1">
+            <div className={`text-[10px] text-[#707A8C] border-t border-[#1A1F29] pt-4 space-y-1 ${isStatusExpanded ? "block" : "hidden md:block"}`}>
               <div>UPTIME: {uptime}</div>
               <div>IP: 192.168.1.104</div>
               <div>SHELL: zsh 5.8.1</div>
